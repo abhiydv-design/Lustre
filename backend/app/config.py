@@ -61,8 +61,27 @@ class Settings:
     razorpay_webhook_secret: str | None
 
 
+def load_dotenv(path: Path) -> None:
+    """Read KEY=VALUE lines from backend/.env into the environment, without overriding anything
+    already set. Handles comments, inline '# ...' comments and quotes. No extra dependency."""
+    if not path.is_file() or os.environ.get("STUDIO_SKIP_DOTENV"):
+        return
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key, value = key.strip().removeprefix("export ").strip(), value.strip()
+        if value[:1] in "\"'" and value[:1] and value.endswith(value[0]) and len(value) > 1:
+            value = value[1:-1]
+        else:
+            value = value.split(" #", 1)[0].split("\t#", 1)[0].strip()
+        os.environ.setdefault(key, value)
+
+
 @lru_cache
 def get_settings() -> Settings:
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
     data_dir = Path(_env("DATA_DIR", "./data")).resolve()
     data_dir.mkdir(parents=True, exist_ok=True)
     return Settings(

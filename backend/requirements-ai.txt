@@ -1,0 +1,3 @@
+# Real AI mode (installed automatically by start.py when .env asks for it).
+replicate>=1.0         # background generation + 4K upscaling (SCENE_PROVIDER / UPSCALE_PROVIDER=replicate)
+rembg[cpu]>=2.0.60     # high-quality cut-outs, BiRefNet (CUTOUT_PROVIDER=rembg); downloads its model on first use

@@ -23,7 +23,7 @@ PHOTO = OUT / "ring.jpg"
 PHOTO.write_bytes(ring_photo())
 from playwright.sync_api import sync_playwright, expect
 errors = []
-def shot(pg, name): pg.screenshot(path=fstr(OUT) + "/{name}.png")
+def shot(pg, name): pg.screenshot(path=f"{OUT}/{name}.png")
 with sync_playwright() as p:
     b = p.chromium.launch()
     ctx = b.new_context(viewport={"width": 390, "height": 844}, device_scale_factor=2, locale="en-IN", accept_downloads=True)

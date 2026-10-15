@@ -31,10 +31,11 @@ generate     ─► background around the masked product (FLUX Fill, or a flat c
 ## Run
 
 ```bash
+python ../start.py              # one command: installs, configures and starts (see ../RUN.md)
+# or by hand:
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env            # fill in, then export (or use direnv)
-uvicorn app.main:app --reload   # API docs at http://localhost:8000/docs
+pip install -r requirements.txt  # plus requirements-ai.txt for real AI mode
+uvicorn app.main:app --reload    # reads backend/.env automatically
 pytest -q                       # 34 tests (API, app, operations console, evaluation harness), offline with mock providers
 ```
 

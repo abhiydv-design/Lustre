@@ -18,7 +18,9 @@ Open app as a guest → create a product (category; name suggested) → add a ph
 ## Run
 
 ```bash
-cd backend && pip install -r requirements.txt && cp .env.example .env
-uvicorn app.main:app --reload   # app: http://localhost:8000/app  ·  API docs: /docs
-pytest -q                       # 34 tests
+git clone https://github.com/abhiydv-design/Lustre.git
+cd Lustre
+python start.py           # or: python start.py --phone   to open it on your phone
 ```
+
+Everything else (phone links, real AI, Docker, hosting online) is in **[RUN.md](RUN.md)**.

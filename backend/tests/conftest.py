@@ -7,6 +7,7 @@ from PIL import Image, ImageDraw
 
 _tmp = tempfile.mkdtemp()
 os.environ.update({
+    "STUDIO_SKIP_DOTENV": "1",  # tests never read a developer's backend/.env
     "DATA_DIR": _tmp, "DATABASE_URL": f"sqlite:///{_tmp}/test.db", "DEV_MODE": "1",
     "CUTOUT_PROVIDER": "threshold", "SCENE_PROVIDER": "mock", "UPSCALE_PROVIDER": "lanczos",
     "TRIAL_CREDITS": "3", "INITIAL_GENERATION_COST": "1", "ADDITIONAL_GENERATION_COST": "1",

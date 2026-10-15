@@ -1,0 +1,43 @@
+# One-click hosting on Render (render.com): New > Blueprint > pick this repo.
+# Gives an https address jewellers can open on their phones. Needs a paid instance
+# because photos and the database live on a persistent disk.
+services:
+  - type: web
+    name: jewellery-image-studio
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter
+    healthCheckPath: /health
+    disk:
+      name: studio-data
+      mountPath: /data
+      sizeGB: 10
+    envVars:
+      - key: DATA_DIR
+        value: /data
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEV_MODE              # 1 = sign-in codes shown on screen (no SMS yet). See RUN.md before inviting jewellers.
+        value: "1"
+      - key: ADMIN_TOKENS          # e.g. yourname:a-long-random-secret
+        sync: false
+      - key: CUTOUT_PROVIDER
+        value: rembg
+      - key: SCENE_PROVIDER
+        value: replicate
+      - key: UPSCALE_PROVIDER
+        value: replicate
+      - key: REPLICATE_API_TOKEN
+        sync: false
+      - key: PACK_STARTER_PRICE_INR
+        sync: false
+      - key: PACK_SHOP_PRICE_INR
+        sync: false
+      - key: PACK_STUDIO_PRICE_INR
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false

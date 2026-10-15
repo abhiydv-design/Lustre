@@ -1,0 +1,15 @@
+# docker compose up --build   →   http://localhost:8000/app
+# Settings: backend/.env (create it with `python start.py --setup`, or copy backend/.env.example).
+services:
+  studio:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: ./backend/.env
+        required: false
+    volumes:
+      - studio-data:/data     # database, photos, images and the cut-out model survive restarts
+    restart: unless-stopped
+volumes:
+  studio-data: {}
