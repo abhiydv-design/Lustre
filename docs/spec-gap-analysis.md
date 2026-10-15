@@ -20,6 +20,7 @@ Compares `docs/product-spec.md` (the source of truth) with the code. Updated aft
 | §9.8 / §14 Real deletion, documented | File deletion tested; `docs/data-retention.md` |
 | §7 V1 = catalogue and marketplace only | Velvet, Silk, Festive and On-model switched off |
 | §13.2 Only verified marketplace presets | Register in `marketplaces.py`; ships empty |
+| §10.5–10.7, §11 Fidelity test design, severity, launch gate, dataset template, rights checks, regression comparison | `backend/evaluation/` harness: dataset CSV, runner, review page, gate report |
 | §4 Don't overclaim | API notice asks the user to check details; prototype copy softened |
 | §15 Hindi | Labels for categories and presets are in `/catalog`. Full interface text belongs in the app |
 
@@ -27,7 +28,7 @@ Compares `docs/product-spec.md` (the source of truth) with the code. Updated aft
 
 - **Marketplaces:** pick the first ones, verify their requirements, and add them to `marketplaces.py` (§13, §18 #2).
 - **Export details:** exact sizes, file types and limits for catalogue exports; the current 4K ratios are working defaults (§9.6, §18 #3).
-- **Fidelity evaluation:** the 10–20 item evaluation set, severity labels and the launch quality gate (§10.5–10.7, §11).
+- **Fidelity evaluation:** the harness is built (`backend/evaluation/`). Still needed: the real 10–20 photo dataset with rights confirmed, the gate thresholds in `gate.toml`, and a reviewer procedure (who reviews, and whether two reviewers must agree).
 - **Mobile app:** onboarding (English and Hindi), native share, and the phone sign-in screen. The prototype's flow still reflects the old free-preview model and needs a pass.
 - **Infrastructure:** an SMS gateway with DLT registration, a job queue, cloud storage, and Postgres.
 - **Retention decisions** listed in `docs/data-retention.md`.

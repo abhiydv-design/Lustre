@@ -1,0 +1,22 @@
+# Launch quality gate (spec §10.7).
+# EVERY NUMBER HERE IS A PLACEHOLDER for the founder to decide. Change it, commit it, and the
+# report will judge every future run against it.
+
+# --- Is the test set broad enough? (§10.5, §11.2) ---
+min_items = 10                 # evaluation examples (development rows don't count)
+min_categories = 4
+required_tags = [              # each must appear on at least one evaluation example
+  "reflective_metal", "transparent_stone", "faceted_stone", "opaque_stone",
+  "small_stones", "fine_chain", "intricate", "simple",
+  "dark", "blurry", "occluded", "single_view", "multi_angle",
+]
+
+# --- Review procedure ---
+require_all_reviewed = true    # no verdict until every successful output has a complete review
+
+# --- Thresholds (§10.6: critical and major changes are never successful outputs) ---
+max_critical = 0               # count, across the whole run
+max_major_rate = 0.02          # share of reviewed outputs
+max_minor_rate = 0.15          # acceptable minor-difference threshold is still undecided (§10.6)
+min_usable_rate = 0.90         # share of reviewed outputs judged visually usable
+max_technical_failure_rate = 0.05

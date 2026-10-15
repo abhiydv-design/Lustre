@@ -35,10 +35,14 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env            # fill in, then export (or use direnv)
 uvicorn app.main:app --reload   # API docs at http://localhost:8000/docs
-pytest -q                       # 18 end-to-end tests, run offline with mock providers
+pytest -q                       # 25 tests (API + evaluation harness), run offline with mock providers
 ```
 
 No API keys needed to try it: `SCENE_PROVIDER=mock UPSCALE_PROVIDER=lanczos CUTOUT_PROVIDER=threshold`. With `DEV_MODE=1`, sign-in codes are returned in the API response.
+
+## Fidelity evaluation
+
+The launch quality gate (spec §10.5–10.7) has its own tool in `evaluation/`. See `evaluation/README.md`.
 
 ## Endpoints, by screen
 

@@ -60,7 +60,7 @@ def ensure_prepared(photo_id: str) -> Image.Image:
         cutout = cutout_fn(original)
         photo.hints = json.dumps(json.loads(photo.hints or "[]") + cutout_hints(original.size, cutout.getchannel("A")))
         s.commit()
-        product_img, info = prepare_product(original, cutout)
+        product_img, info = prepare_product(original, cutout, get_settings().white_balance_strength)
         photo.product_key = storage.save_image(f"products/{photo.product_id}/{photo.id}_cutout.png", product_img)
         product = s.get(Product, photo.product_id)
         if not product.metal:

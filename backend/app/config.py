@@ -41,6 +41,7 @@ class Settings:
     flux_fill_model: str
     esrgan_model: str
     preview_long_side: int
+    white_balance_strength: float
 
     trial_credits: int
     initial_generation_cost: int
@@ -75,6 +76,7 @@ def get_settings() -> Settings:
         flux_fill_model=_env("FLUX_FILL_MODEL", "black-forest-labs/flux-fill-pro"),
         esrgan_model=_env("ESRGAN_MODEL", "nightmareai/real-esrgan"),
         preview_long_side=_int("PREVIEW_LONG_SIDE", 1024),
+        white_balance_strength=float(_env("WHITE_BALANCE_STRENGTH", "0.5")),
         trial_credits=_int("TRIAL_CREDITS", 3),
         initial_generation_cost=_int("INITIAL_GENERATION_COST", 1),
         additional_generation_cost=_int("ADDITIONAL_GENERATION_COST", 1),

@@ -6,6 +6,7 @@ A mobile app for Indian jewellery sellers: turn an ordinary phone photo into a p
 - `docs/spec-gap-analysis.md`: what's built vs. the spec, and what's still open.
 - `docs/data-retention.md`: what is stored and what deletion does.
 - `backend/`: FastAPI API and image pipeline. See `backend/README.md`.
+- `backend/evaluation/`: fidelity evaluation harness and launch quality gate. See `backend/evaluation/README.md`.
 - `design/prototype/`: clickable phone prototype, one `.dc.html` file per screen. Live canvas: https://claude.ai/artifact/DNzXPxPCjmw7cqvjcExrem (its flow predates the per-generation credit model and needs a pass).
 
 ## The flow (v1)
@@ -17,5 +18,5 @@ Open app as a guest → create a product (category; name suggested) → add a ph
 ```bash
 cd backend && pip install -r requirements.txt && cp .env.example .env
 uvicorn app.main:app --reload   # http://localhost:8000/docs
-pytest -q                       # 18 end-to-end tests
+pytest -q                       # 25 tests
 ```
