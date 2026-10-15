@@ -5,7 +5,7 @@ import io
 import json
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from PIL import Image
 from pydantic import BaseModel, Field
 from sqlalchemy import func, select
@@ -37,7 +37,7 @@ def own_product(s, user: User, product_id: str) -> Product:
 
 
 def generation_summary(g: Generation) -> dict:
-    return {"id": g.id, "status": g.status, "review": g.review, "output": g.output, "preset": g.preset,
+    return {"id": g.id, "product_id": g.product_id, "status": g.status, "review": g.review, "output": g.output, "preset": g.preset,
             "aspect": g.aspect, "marketplace_preset": g.marketplace_preset, "cost": g.cost,
             "preview_url": f"/generations/{g.id}/preview" if g.preview_key else None,
             "created_at": g.created_at.isoformat()}
@@ -214,8 +214,17 @@ def own_photo(s, user: User, photo_id: str) -> SourcePhoto:
 
 
 @router.get("/photos/{photo_id}")
-def get_photo(photo_id: str, user: User = Depends(current_user), s=Depends(get_db)):
-    return FileResponse(storage.path_for(own_photo(s, user, photo_id).original_key))
+def get_photo(photo_id: str, w: int | None = None, user: User = Depends(current_user), s=Depends(get_db)):
+    """The original photo, or a small JPEG copy with ?w=512 for lists on slow mobile data."""
+    path = storage.path_for(own_photo(s, user, photo_id).original_key)
+    if not w:
+        return FileResponse(path)
+    from ..pipeline.prepare import load_photo
+    img = load_photo(path.read_bytes())
+    img.thumbnail((max(64, min(w, 1600)),) * 2)
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG", quality=82)
+    return Response(buf.getvalue(), media_type="image/jpeg", headers={"Cache-Control": "private, max-age=86400"})
 
 
 @router.delete("/photos/{photo_id}", status_code=204)

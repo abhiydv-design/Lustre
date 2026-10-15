@@ -8,7 +8,8 @@ A mobile app for Indian jewellery sellers: turn an ordinary phone photo into a p
 - `backend/`: FastAPI API and image pipeline. See `backend/README.md`.
 - `backend/app/routes/admin.py`: operations console at `/admin` (report review, §16 metrics, access log).
 - `backend/evaluation/`: fidelity evaluation harness and launch quality gate. See `backend/evaluation/README.md`.
-- `design/prototype/`: clickable phone prototype, one `.dc.html` file per screen. Live canvas: https://claude.ai/artifact/DNzXPxPCjmw7cqvjcExrem (its flow predates the per-generation credit model and needs a pass).
+- `backend/app/web/`: **the jeweller app**, a mobile web app in English and Hindi, served at `/app` and wired to the real API. Open it on any phone browser; it can be added to the home screen.
+- `design/prototype/`: the original clickable prototype (canvas: https://claude.ai/artifact/DNzXPxPCjmw7cqvjcExrem). Superseded by the real app; kept for reference.
 
 ## The flow (v1)
 
@@ -18,6 +19,6 @@ Open app as a guest → create a product (category; name suggested) → add a ph
 
 ```bash
 cd backend && pip install -r requirements.txt && cp .env.example .env
-uvicorn app.main:app --reload   # http://localhost:8000/docs
-pytest -q                       # 31 tests
+uvicorn app.main:app --reload   # app: http://localhost:8000/app  ·  API docs: /docs
+pytest -q                       # 34 tests
 ```

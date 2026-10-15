@@ -3,7 +3,11 @@ from __future__ import annotations
 
 import logging
 
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import get_settings
@@ -29,6 +33,13 @@ def create_app() -> FastAPI:
     app.include_router(generations.router)
     app.include_router(payments.router)
     app.include_router(admin.router)
+
+    # The jeweller-facing mobile web app (English + Hindi), served from the same origin as the API.
+    app.mount("/app", StaticFiles(directory=Path(__file__).parent / "web", html=True), name="web")
+
+    @app.get("/", include_in_schema=False)
+    def root():
+        return RedirectResponse("/app/")
 
     @app.get("/health")
     def health():

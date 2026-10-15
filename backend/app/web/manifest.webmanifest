@@ -1,0 +1,9 @@
+{
+  "name": "Jewellery Image Studio",
+  "short_name": "Jewellery Studio",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#121015",
+  "theme_color": "#121015",
+  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]
+}

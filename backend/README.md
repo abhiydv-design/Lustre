@@ -35,10 +35,27 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env            # fill in, then export (or use direnv)
 uvicorn app.main:app --reload   # API docs at http://localhost:8000/docs
-pytest -q                       # 31 tests (API, operations console, evaluation harness), offline with mock providers
+pytest -q                       # 34 tests (API, app, operations console, evaluation harness), offline with mock providers
 ```
 
 No API keys needed to try it: `SCENE_PROVIDER=mock UPSCALE_PROVIDER=lanczos CUTOUT_PROVIDER=threshold`. With `DEV_MODE=1`, sign-in codes are returned in the API response.
+
+## The jeweller app (`/app`)
+
+A mobile web app in `app/web/`: plain HTML, CSS and JavaScript, with no build step. It's served from the same origin as the API.
+
+**What it covers:**
+- **Getting started:** onboarding with photo tips and language choice, then guest start.
+- **Catalogue:** products and photos, plus a second angle from the gallery.
+- **Making an image:** choose a look and size with the cost shown first; live progress; compare with the original.
+- **After the image:** save, download, share (the phone's share sheet, for WhatsApp and Instagram), report a problem, and delete.
+- **Account:** credits and history, buying credits, phone sign-in when needed, language switch, and account deletion.
+
+**How it behaves:**
+- **English and Hindi:** all text is in `app/web/i18n.js`, and the test suite checks both languages have every key. Have the Hindi reviewed by a native speaker from your audience before launch.
+- **Signing in:** when the server answers `sign_in_required` or `needs_credits`, the app shows sign-in or the credit packs, then finishes what the jeweller was doing.
+- **Payments:** with Razorpay keys set, it opens Razorpay Checkout and waits for the webhook to add credits. Without keys (test mode), payment completes instantly.
+- **Browser check:** `scripts/e2e_app.py` walks the whole journey in a headless phone browser.
 
 ## Operations console (`/admin`)
 

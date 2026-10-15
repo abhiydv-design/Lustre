@@ -22,6 +22,7 @@ Compares `docs/product-spec.md` (the source of truth) with the code. Updated aft
 | §13.2 Only verified marketplace presets | Register in `marketplaces.py`; ships empty |
 | §10.5–10.7, §11 Fidelity test design, severity, launch gate, dataset template, rights checks, regression comparison | `backend/evaluation/` harness: dataset CSV, runner, review page, gate report |
 | §16 Metrics (usage, quality by category/material/photo condition/preset, business); §14 governed support access; manual review of refund claims (§18 #12 support process) | `/admin` console: report queue, metrics, audit log |
+| §8 Core journey, §9.1 onboarding, §9.6 share, §15 English and Hindi | Mobile web app at `/app` |
 | §4 Don't overclaim | API notice asks the user to check details; prototype copy softened |
 | §15 Hindi | Labels for categories and presets are in `/catalog`. Full interface text belongs in the app |
 
@@ -30,7 +31,10 @@ Compares `docs/product-spec.md` (the source of truth) with the code. Updated aft
 - **Marketplaces:** pick the first ones, verify their requirements, and add them to `marketplaces.py` (§13, §18 #2).
 - **Export details:** exact sizes, file types and limits for catalogue exports; the current 4K ratios are working defaults (§9.6, §18 #3).
 - **Fidelity evaluation:** the harness is built (`backend/evaluation/`). Still needed: the real 10–20 photo dataset with rights confirmed, the gate thresholds in `gate.toml`, and a reviewer procedure (who reviews, and whether two reviewers must agree).
-- **Mobile app:** onboarding (English and Hindi), native share, and the phone sign-in screen. The prototype's flow still reflects the old free-preview model and needs a pass.
+- **Mobile app:** a working mobile web app now covers the full v1 journey in English and Hindi (`/app`). Still open:
+  - native review of the Hindi text;
+  - offline support (service worker) and app-store packaging, if you want them;
+  - testing with real jewellers on their own phones (Phase 4).
 - **Infrastructure:** an SMS gateway with DLT registration, a job queue, cloud storage, Postgres, and database migrations (Alembic).
 - **Support process:** who works the report queue, how fast, and the written policy for staff access to images (§14, §18 #12). The console enforces and logs access, but the policy needs writing.
 - **Retention decisions** listed in `docs/data-retention.md`.
