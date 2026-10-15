@@ -91,6 +91,7 @@
     document.body.appendChild(el); setTimeout(() => el.remove(), ms);
   }
   function sheet(html, onMount) {
+    $$(".toast").forEach(x => x.remove());  // don't cover the sheet's buttons
     return new Promise(resolve => {
       const scrim = document.createElement("div");
       scrim.className = "scrim";
