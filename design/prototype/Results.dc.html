@@ -16,51 +16,34 @@ a{color:#D4B26A}a:hover{color:#E8CB8A}
 button{font:inherit;cursor:pointer}
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; background: #121015; color: #F3EEE6; font-family: 'Manrope', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
-  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 12px 8px">
+<div style="width: 390px; height: 844px; background: #121015; color: #F3EEE6; font-family: 'Manrope', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden; position: relative">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 12px 4px">
     <a href="Main.dc.html" aria-label="Back to home" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #F3EEE6">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
     </a>
-    <div style="flex: 1 1 auto; font-size: 17px; font-weight: 700">Solitaire ring · Marble</div>
-    <div style="font-size: 13px; color: #B9B0BE; padding-right: 8px">4 ready</div>
+    <div style="flex: 1 1 auto; font-size: 17px; font-weight: 700">Your photos</div>
+    <a href="Credits.dc.html" style="display: flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 999px; border: 1px solid #3A3440; color: #F3EEE6; text-decoration: none; font-size: 13px; font-weight: 700">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4B26A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9z"></path><path d="M2 9h20"></path></svg>
+      {{credits}}
+    </a>
   </div>
 
-  <div style="flex: 1 1 auto; overflow-y: auto; padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 16px">
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px; border-radius: 12px; background: #1C1920; border: 1px solid #3A3440" role="group" aria-label="View">
-      <button type="button" onClick="{{showSingle}}" aria-pressed="{{single}}" style="min-height: 44px; border-radius: 9px; border: none; background: {{tabA}}; color: {{tabAInk}}; font-weight: 700; font-size: 14px">Photo</button>
-      <button type="button" onClick="{{showCompare}}" aria-pressed="{{compare}}" style="min-height: 44px; border-radius: 9px; border: none; background: {{tabB}}; color: {{tabBInk}}; font-weight: 700; font-size: 14px">Compare with original</button>
-    </div>
+  <div style="display: flex; gap: 8px; overflow-x: auto; padding: 6px 20px 10px" role="group" aria-label="Look">
+    <sc-for list="{{looks}}" as="l" hint-placeholder-count="5">
+      <button type="button" onClick="{{l.pick}}" aria-pressed="{{l.on}}" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid {{l.border}}; background: {{l.fill}}; color: {{l.ink}}; font-size: 13px; font-weight: 700">{{l.label}}</button>
+    </sc-for>
+    <a href="Style.dc.html" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 999px; border: 1px dashed #5A5262; color: #D6CFD9; font-size: 13px; font-weight: 700; display: flex; align-items: center; text-decoration: none">+ More looks</a>
+  </div>
 
-    <sc-if value="{{single}}" hint-placeholder-val="{{true}}">
-      <div style="aspect-ratio: 1 / 1; border-radius: 22px; background: {{current.bg}}; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center; position: relative">
-        <svg viewBox="0 0 96 96" width="60%" height="60%" fill="none" aria-hidden="true"><ellipse cx="{{current.sx}}" cy="86" rx="24" ry="4" fill="#000000" opacity="0.22"></ellipse><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path><path d="M36 30 H60 M42 22 L48 30 L54 22 M48 30 V42" stroke="#9FB3C2" stroke-width="1"></path></svg>
-        <span style="position: absolute; top: 12px; left: 12px; padding: 6px 10px; border-radius: 999px; background: #121015E6; color: #F3EEE6; font-size: 12px; font-weight: 700">4K · 3840 × 3840</span>
-      </div>
-    </sc-if>
-
-    <sc-if value="{{compare}}" hint-placeholder-val="{{false}}">
-      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
-        <div style="display: flex; flex-direction: column; gap: 6px">
-          <div style="aspect-ratio: 1 / 1; border-radius: 16px; background: #E4E0DA; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center">
-            <svg viewBox="0 0 96 96" width="66%" height="66%" fill="none" aria-hidden="true"><circle cx="48" cy="57" r="22" stroke="#B8954A" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#E6ECF0" stroke="#93A6B4" stroke-width="1.5" stroke-linejoin="round"></path></svg>
-          </div>
-          <span style="font-size: 13px; font-weight: 600; color: #B9B0BE; text-align: center">Your phone photo</span>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 6px">
-          <div style="aspect-ratio: 1 / 1; border-radius: 16px; background: {{current.bg}}; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center">
-            <svg viewBox="0 0 96 96" width="66%" height="66%" fill="none" aria-hidden="true"><ellipse cx="{{current.sx}}" cy="86" rx="24" ry="4" fill="#000000" opacity="0.22"></ellipse><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path><path d="M36 30 H60 M42 22 L48 30 L54 22 M48 30 V42" stroke="#9FB3C2" stroke-width="1"></path></svg>
-          </div>
-          <span style="font-size: 13px; font-weight: 600; color: #B9B0BE; text-align: center">Generated</span>
-        </div>
-      </div>
-    </sc-if>
-
-    <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #16231A; border: 1px solid #2F5A3B">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9FD3AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
-      <div style="display: flex; flex-direction: column; gap: 2px">
-        <span style="font-size: 14px; font-weight: 700; color: #CFEBD7">Product match checked</span>
-        <span style="font-size: 12px; color: #A9C9B2">Stones, shape and metal tone unchanged from your photo</span>
-      </div>
+  <div style="flex: 1 1 auto; overflow-y: auto; padding: 4px 20px 16px; display: flex; flex-direction: column; gap: 14px">
+    <div style="aspect-ratio: 1 / 1; border-radius: 22px; background: {{current.bg}}; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center; position: relative">
+      <svg viewBox="0 0 96 96" width="60%" height="60%" fill="none" aria-hidden="true"><ellipse cx="{{current.sx}}" cy="86" rx="24" ry="4" fill="#000000" opacity="0.22"></ellipse><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path><path d="M36 30 H60 M42 22 L48 30 L54 22 M48 30 V42" stroke="#9FB3C2" stroke-width="1"></path></svg>
+      <sc-if value="{{current.instant}}" hint-placeholder-val="{{true}}">
+        <span style="position: absolute; top: 12px; left: 12px; padding: 6px 10px; border-radius: 999px; background: #121015E6; color: #CFEBD7; font-size: 12px; font-weight: 700">4K ready</span>
+      </sc-if>
+      <sc-if value="{{current.paid}}" hint-placeholder-val="{{false}}">
+        <span style="position: absolute; top: 12px; right: 12px; padding: 6px 10px; border-radius: 999px; background: #121015E6; color: #D4B26A; font-size: 12px; font-weight: 700">Downloaded</span>
+      </sc-if>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
@@ -71,70 +54,93 @@ button{font:inherit;cursor:pointer}
       </sc-for>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
-      <a href="Generating.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 12px; border: 1px solid #3A3440; background: #1C1920; color: #F3EEE6; font-size: 14px; font-weight: 600; text-decoration: none">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path></svg>
-        More like this
-      </a>
-      <a href="Style.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 12px; border: 1px solid #3A3440; background: #1C1920; color: #F3EEE6; font-size: 14px; font-weight: 600; text-decoration: none">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2"></circle><circle cx="17.5" cy="10.5" r="2"></circle><circle cx="8.5" cy="7.5" r="2"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1 0 1.6-.8 1.6-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H16c3.1 0 5.6-2.5 5.6-5.6C21.9 6 17.5 2 12 2z"></path></svg>
-        Try another look
-      </a>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 14px; background: #16231A; border: 1px solid #2F5A3B">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9FD3AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+      <span style="font-size: 13px; color: #CFEBD7">Your piece is unchanged — only the scene is new</span>
     </div>
   </div>
 
-  <div style="padding: 12px 20px 20px; border-top: 1px solid #2E2934; background: #17141B; display: flex; flex-direction: column; gap: 8px">
-    <sc-if value="{{notSaved}}" hint-placeholder-val="{{true}}">
-      <button type="button" onClick="{{download}}" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; border: none; background: #D4B26A; color: #1A1408; font-weight: 700; font-size: 16px">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
-        Download in 4K · 1 credit
-      </button>
+  <div style="padding: 12px 20px 18px; border-top: 1px solid #2E2934; background: #17141B; display: flex; flex-direction: column; gap: 8px">
+    <sc-if value="{{toast}}" hint-placeholder-val="{{false}}">
+      <div role="status" style="font-size: 13px; font-weight: 700; color: #CFEBD7; text-align: center">{{toast}}</div>
     </sc-if>
-    <sc-if value="{{saved}}" hint-placeholder-val="{{false}}">
-      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; background: #16231A; border: 1px solid #2F5A3B; color: #CFEBD7; font-weight: 700; font-size: 15px" role="status">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
-        Saved to your phone · 23 credits left
-      </div>
-    </sc-if>
-    <div style="font-size: 12px; color: #B9B0BE; text-align: center">PNG · no watermark · free to use on any store</div>
+    <button type="button" onClick="{{downloadOne}}" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; border: none; background: #D4B26A; color: #1A1408; font-weight: 700; font-size: 16px">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+      {{oneLabel}}
+    </button>
+    <button type="button" onClick="{{downloadAll}}" style="width: 100%; min-height: 48px; border-radius: 14px; border: 1px solid #3A3440; background: #1C1920; color: #F3EEE6; font-weight: 700; font-size: 15px">{{allLabel}}</button>
   </div>
+
+  <sc-if value="{{sheet}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; inset: 0; background: #0A080CB3; display: flex; flex-direction: column; justify-content: flex-end">
+      <div role="dialog" aria-label="Get more credits" style="background: #1C1920; border-top: 1px solid #3A3440; border-radius: 24px 24px 0 0; padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 14px">
+        <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 26px; font-weight: 600; line-height: 1.1">{{sheetTitle}}</div>
+        <div style="font-size: 14px; line-height: 1.5; color: #D6CFD9">Buy once and your photos save straight away — no need to tap again.</div>
+        <button type="button" onClick="{{buy}}" style="width: 100%; min-height: 56px; border-radius: 14px; border: none; background: #D4B26A; color: #1A1408; font-weight: 700; font-size: 16px">50 credits · ₹[PRICE] · Pay with UPI</button>
+        <a href="Credits.dc.html" style="text-align: center; font-size: 14px; font-weight: 700; min-height: 44px; display: flex; align-items: center; justify-content: center">Other packs</a>
+        <button type="button" onClick="{{closeSheet}}" style="min-height: 44px; border: none; background: transparent; color: #B9B0BE; font-size: 14px; font-weight: 600">Not now</button>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { pick: 0, view: 'single', saved: false };
+    this.state = { look: 'Marble', pick: 0, credits: 3, paid: {}, sheet: false, pending: null, toast: '' };
+  }
+  key(i) { return this.state.look + ':' + i; }
+  pay(indices, after) {
+    var paid = Object.assign({}, this.state.paid), unpaid = 0, self = this;
+    indices.forEach(function (i) { if (!paid[self.key(i)]) unpaid++; });
+    var credits = after !== undefined ? after : this.state.credits;
+    if (unpaid > credits) {
+      this.setState({ sheet: true, pending: indices, need: unpaid - credits, toast: '' });
+      return;
+    }
+    indices.forEach(function (i) { paid[self.key(i)] = true; });
+    var msg = unpaid === 0 ? 'Saved again — re-downloads are free'
+      : (indices.length > 1 ? indices.length + ' photos saved in 4K' : 'Saved to your phone in 4K');
+    this.setState({ paid: paid, credits: credits - unpaid, sheet: false, pending: null, toast: msg });
   }
   renderVals() {
     var self = this;
-    var defs = [
-      { name: 'Variation 1, soft left light', bg: 'linear-gradient(135deg,#F4F2EE 0%,#E3DED7 42%,#F7F5F1 58%,#D9D3CA 100%)', sx: 54 },
-      { name: 'Variation 2, warm veined marble', bg: 'linear-gradient(115deg,#F2EDE6 0%,#DCCFC0 38%,#F6F1EA 55%,#CFC2B3 100%)', sx: 44 },
-      { name: 'Variation 3, cool grey marble', bg: 'linear-gradient(150deg,#ECEDEF 0%,#D2D5DA 45%,#F2F3F5 62%,#C8CCD2 100%)', sx: 50 },
-      { name: 'Variation 4, dark marble', bg: 'linear-gradient(135deg,#3A3836 0%,#24221F 45%,#45423E 60%,#1C1A18 100%)', sx: 56 }
-    ];
-    var pick = this.state.pick;
-    var single = this.state.view === 'single';
+    var sets = {
+      'Marble': ['linear-gradient(135deg,#F4F2EE 0%,#E3DED7 42%,#F7F5F1 58%,#D9D3CA 100%)', 'linear-gradient(115deg,#F2EDE6 0%,#DCCFC0 38%,#F6F1EA 55%,#CFC2B3 100%)', 'linear-gradient(150deg,#ECEDEF 0%,#D2D5DA 45%,#F2F3F5 62%,#C8CCD2 100%)', 'linear-gradient(135deg,#3A3836 0%,#24221F 45%,#45423E 60%,#1C1A18 100%)'],
+      'White': ['#FFFFFF'],
+      'Velvet': ['radial-gradient(circle at 50% 40%,#43244A,#1D0F20)', 'radial-gradient(circle at 40% 30%,#5A2240,#22101A)', 'radial-gradient(circle at 60% 40%,#1F2A4A,#0E1324)', 'radial-gradient(circle at 50% 50%,#2F3A2A,#141A12)'],
+      'Silk': ['linear-gradient(160deg,#F3E3D3,#D7B596 55%,#F1DCC6)', 'linear-gradient(130deg,#F6E9E4,#D9AFA3 55%,#F3DED6)', 'linear-gradient(170deg,#EDE6DA,#C9B79C 55%,#EFE6D8)', 'linear-gradient(140deg,#E9E4EE,#B9AFC7 55%,#ECE6F0)'],
+      'Festive': ['radial-gradient(circle at 30% 30%,#8A2A1E,#3B0B0B)', 'radial-gradient(circle at 70% 30%,#9A5A12,#3A1A05)', 'radial-gradient(circle at 40% 60%,#6E1A3A,#2A0815)', 'radial-gradient(circle at 50% 30%,#7A3A10,#2E1205)']
+    };
+    var bgs = sets[this.state.look];
+    var pick = Math.min(this.state.pick, bgs.length - 1);
+    var variants = bgs.map(function (bg, i) {
+      return { bg: bg, name: 'Photo ' + (i + 1), sx: [54, 44, 50, 56][i], instant: i < 2, paid: !!self.state.paid[self.key(i)] };
+    });
+    var all = variants.map(function (v, i) { return i; });
+    var unpaidAll = variants.filter(function (v) { return !v.paid; }).length;
+    var current = variants[pick];
     return {
-      current: defs[pick],
-      single: single,
-      compare: !single,
-      tabA: single ? '#D4B26A' : 'transparent',
-      tabAInk: single ? '#1A1408' : '#D6CFD9',
-      tabB: single ? 'transparent' : '#D4B26A',
-      tabBInk: single ? '#D6CFD9' : '#1A1408',
-      showSingle: function () { self.setState({ view: 'single' }); },
-      showCompare: function () { self.setState({ view: 'compare' }); },
-      saved: !!this.state.saved,
-      notSaved: !this.state.saved,
-      download: function () { self.setState({ saved: true }); },
-      variants: defs.map(function (d, i) {
-        return Object.assign({}, d, {
-          on: i === pick,
-          border: i === pick ? '#D4B26A' : '#3A3440',
-          pick: function () { self.setState({ pick: i, saved: false }); }
-        });
+      credits: this.state.credits,
+      current: current,
+      toast: this.state.toast,
+      oneLabel: current.paid ? 'Download again · free' : (current.instant ? 'Download 4K · ready now' : 'Download 4K · 1 credit'),
+      allLabel: unpaidAll === 0 ? 'All ' + variants.length + ' downloaded' : 'Download all ' + variants.length + ' · ' + unpaidAll + ' credit' + (unpaidAll > 1 ? 's' : ''),
+      sheet: !!this.state.sheet,
+      sheetTitle: 'You need ' + (this.state.need || 1) + ' more credit' + ((this.state.need || 1) > 1 ? 's' : ''),
+      downloadOne: function () { self.pay([pick]); },
+      downloadAll: function () { self.pay(all); },
+      buy: function () { self.pay(self.state.pending || [pick], self.state.credits + 50); },
+      closeSheet: function () { self.setState({ sheet: false, pending: null }); },
+      looks: ['Marble', 'White', 'Velvet', 'Silk', 'Festive'].map(function (l) {
+        var on = l === self.state.look;
+        return { label: l, on: on, border: on ? '#D4B26A' : '#3A3440', fill: on ? '#D4B26A' : '#1C1920', ink: on ? '#1A1408' : '#F3EEE6',
+                 pick: function () { self.setState({ look: l, pick: 0, toast: '' }); } };
+      }),
+      variants: variants.map(function (v, i) {
+        return Object.assign({}, v, { on: i === pick, border: i === pick ? '#D4B26A' : '#3A3440',
+                                      pick: function () { self.setState({ pick: i, toast: '' }); } });
       })
     };
   }

@@ -4,7 +4,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, create_engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, sessionmaker
 
 
@@ -44,8 +44,9 @@ class Shoot(Base):
     __tablename__ = "shoots"
     id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_id)
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"), index=True)
-    jewellery_type: Mapped[str] = mapped_column(String(30))
-    metal: Mapped[str] = mapped_column(String(30))
+    jewellery_type: Mapped[str] = mapped_column(String(30), default="auto")
+    metal: Mapped[str] = mapped_column(String(30), default="auto")       # "auto" until detected
+    metal_detected: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
     photos: Mapped[list["SourcePhoto"]] = relationship(back_populates="shoot", order_by="SourcePhoto.position")
 
@@ -59,6 +60,7 @@ class SourcePhoto(Base):
     product_key: Mapped[str | None] = mapped_column(String(255), nullable=True)  # prepared cut-out PNG
     width: Mapped[int] = mapped_column(Integer)
     height: Mapped[int] = mapped_column(Integer)
+    hints: Mapped[str] = mapped_column(Text, default="[]")  # JSON list of friendly photo tips
     shoot: Mapped[Shoot] = relationship(back_populates="photos")
 
 
@@ -91,6 +93,8 @@ class Variation(Base):
     final_status: Mapped[str] = mapped_column(String(20), default="none")  # none|rendering|ready|failed
     final_fidelity: Mapped[float | None] = mapped_column(Float, nullable=True)
     render_attempts: Mapped[int] = mapped_column(Integer, default=0)
+    paid: Mapped[bool] = mapped_column(Boolean, default=False)
+    charges: Mapped[int] = mapped_column(Integer, default=0)
     warning: Mapped[str | None] = mapped_column(Text, nullable=True)
     job: Mapped[Job] = relationship(back_populates="variations")
 
@@ -104,6 +108,7 @@ class Payment(Base):
     credits: Mapped[int] = mapped_column(Integer)
     amount_paise: Mapped[int] = mapped_column(Integer)
     status: Mapped[str] = mapped_column(String(20), default="created")  # created|paid
+    then_download: Mapped[str] = mapped_column(Text, default="[]")  # variation ids to deliver once paid
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
 

@@ -9,6 +9,7 @@ The product is never passed through a generative model on its way to the output.
 """
 from __future__ import annotations
 
+import json
 import logging
 import random
 
@@ -17,10 +18,11 @@ from sqlalchemy import select
 
 from .. import credits, storage
 from ..config import get_settings
-from ..db import Job, SourcePhoto, Variation, new_session
+from ..db import Job, Shoot, SourcePhoto, Variation, new_session
 from .composite import add_contact_shadow, fidelity, inpaint_inputs, paste_product, watermark
 from .cutout import get_cutout
 from .geometry import FORMATS, plan, preview_size, rescale
+from .inspect import cutout_hints, detect_metal
 from .prepare import load_photo, prepare_product
 from .providers import get_scene_provider, get_upscaler
 from .styles import STYLES
@@ -51,8 +53,14 @@ def ensure_prepared(photo_id: str) -> Image.Image:
             return storage.load_image(photo.product_key)
         original = load_photo(storage.path_for(photo.original_key).read_bytes())
         cutout_fn, _, _ = _providers()
-        product, info = prepare_product(original, cutout_fn(original))
+        cutout = cutout_fn(original)
+        photo.hints = json.dumps(json.loads(photo.hints or "[]") + cutout_hints(original.size, cutout.getchannel("A")))
+        s.commit()
+        product, info = prepare_product(original, cutout)
         photo.product_key = storage.save_image(f"shoots/{photo.shoot_id}/{photo.id}_product.png", product)
+        shoot = s.get(Shoot, photo.shoot_id)
+        if shoot.metal == "auto":
+            shoot.metal, shoot.metal_detected = detect_metal(product), True
         s.commit()
         log.info("prepared photo %s %s", photo_id, info)
         return product
@@ -123,23 +131,51 @@ def process_job(job_id: str) -> None:
                                 scene_key=scene_key, preview_key=preview_key, preview_fidelity=score))
                 s.commit()
         _set(job_id, status="done", stage="ready")
+        prerender(job_id)
     except Exception as exc:  # noqa: BLE001 - surface any failure to the app
         log.exception("job %s failed", job_id)
-        _set(job_id, status="failed", error=str(exc)[:500])
+        _set(job_id, status="failed", error=friendly_error(exc))
 
 
-def process_final(variation_id: str, charge_ref: str) -> None:
-    """Runs in the background after a paid download. Refunds the credit if rendering fails."""
+def friendly_error(exc: Exception) -> str:
+    text = str(exc)
+    if "No jewellery found" in text:
+        return "We couldn't find the jewellery in your photo. Try again on a plain, light background."
+    if "fidelity" in text:
+        return "Something didn't look exactly like your piece, so we stopped. Please try again; you were not charged."
+    return "Something went wrong on our side. Please try again; you were not charged."
+
+
+def prerender(job_id: str) -> None:
+    """Warm the 4K files for the first few photos so 'Download' is instant. The user pays only on download."""
+    n = get_settings().prerender_per_job
+    if n <= 0:
+        return
+    with new_session() as s:
+        ids = list(s.scalars(select(Variation.id).where(Variation.job_id == job_id,
+                                                         Variation.final_status == "none")
+                             .order_by(Variation.position).limit(n)))
+        for vid in ids:
+            s.get(Variation, vid).final_status = "rendering"
+        s.commit()
+    for vid in ids:
+        process_final(vid)
+
+
+def process_final(variation_id: str) -> None:
+    """Render the 4K file. If it fails after the user paid, refund the credit and let them retry."""
     with new_session() as s:
         v = s.get(Variation, variation_id)
         job = s.get(Job, v.job_id)
-        user_id, style_id, fmt, photo_id, scene_key = job.user_id, job.style, job.fmt, v.photo_id, v.scene_key
+        style_id, fmt, photo_id, scene_key = job.style, job.fmt, v.photo_id, v.scene_key
+        v.render_attempts += 1
+        s.commit()
     try:
         product = ensure_prepared(photo_id)
         final, score, warning = render_final(product, storage.load_image(scene_key).convert("RGB"), style_id, fmt)
         if score < MIN_FIDELITY:
             raise RuntimeError(f"fidelity check failed on 4K render ({score:.4f})")
-        key = storage.save_image(f"jobs/{v.job_id}/{variation_id}_4k.png", final, optimize=False)
+        key = storage.save_image(f"jobs/{job.id}/{variation_id}_4k.png", final, optimize=False)
         with new_session() as s:
             v = s.get(Variation, variation_id)
             v.final_key, v.final_status, v.final_fidelity, v.warning = key, "ready", score, warning
@@ -147,6 +183,11 @@ def process_final(variation_id: str, charge_ref: str) -> None:
     except Exception:  # noqa: BLE001
         log.exception("4K render failed for %s", variation_id)
         with new_session() as s:
-            s.get(Variation, variation_id).final_status = "failed"
+            v = s.get(Variation, variation_id)
+            v.final_status = "failed"
+            refund = v.paid
+            v.paid = False
+            charges, user_id = v.charges, s.get(Job, v.job_id).user_id
             s.commit()
-            credits.apply(s, user_id, +1, "refund", f"refund:{charge_ref}")
+            if refund:
+                credits.apply(s, user_id, +1, "refund", f"refund:download:{variation_id}:{charges}")

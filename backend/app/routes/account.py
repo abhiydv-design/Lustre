@@ -1,9 +1,12 @@
-"""Auth + home screen. Dev login only; replace with phone OTP (e.g. MSG91 or Firebase) before launch."""
+"""Auth + home screen.
+
+No sign-up wall: the app calls POST /auth/start on first open and stores the token on the device.
+Ask for a phone number later (e.g. at first purchase) to recover the account on a new phone."""
 from __future__ import annotations
 
 import secrets
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
@@ -15,16 +18,15 @@ from ..deps import current_user, get_db
 router = APIRouter()
 
 
-class DevLogin(BaseModel):
-    name: str = Field(min_length=1, max_length=120)
+class Start(BaseModel):
+    name: str = Field("", max_length=120)
 
 
-@router.post("/auth/dev-login")
-def dev_login(body: DevLogin, s=Depends(get_db)):
+@router.post("/auth/start")
+def start(body: Start | None = None, s=Depends(get_db)):
+    """Instant guest account with welcome credits. No form, no OTP."""
     settings = get_settings()
-    if not settings.dev_mode:
-        raise HTTPException(404)
-    user = User(name=body.name, token=secrets.token_urlsafe(32), credits=0)
+    user = User(name=(body and body.name) or "", token=secrets.token_urlsafe(32), credits=0)
     s.add(user)
     s.commit()
     if settings.free_credits:

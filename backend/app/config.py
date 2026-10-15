@@ -46,6 +46,8 @@ class Settings:
     free_credits: int
     daily_preview_jobs: int
     max_upload_mb: int
+    auto_jobs: list[tuple[str, int]]   # started the moment photos are uploaded
+    prerender_per_job: int             # 4K renders warmed in advance (free to the user, costs you upscaling)
 
     pack_prices_inr: dict[str, int | None]
     razorpay_key_id: str | None
@@ -75,6 +77,9 @@ def get_settings() -> Settings:
         free_credits=_int("FREE_CREDITS", 3),
         daily_preview_jobs=_int("DAILY_PREVIEW_JOBS", 20),
         max_upload_mb=_int("MAX_UPLOAD_MB", 25),
+        auto_jobs=[(s.split(":")[0], int(s.split(":")[1]))
+                   for s in _env("AUTO_JOBS", "white:1,marble:4").split(",") if s],
+        prerender_per_job=_int("PRERENDER_PER_JOB", 2),
         pack_prices_inr={
             "starter": _price("PACK_STARTER_PRICE_INR"),
             "shop": _price("PACK_SHOP_PRICE_INR"),

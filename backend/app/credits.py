@@ -9,7 +9,9 @@ from .db import CreditEntry, User
 
 
 class InsufficientCredits(Exception):
-    pass
+    def __init__(self, needed: int = 1, balance: int = 0):
+        super().__init__(f"needs {needed} credits, has {balance}")
+        self.needed, self.balance = needed, balance
 
 
 def apply(s: Session, user_id: str, delta: int, reason: str, ref: str) -> bool:

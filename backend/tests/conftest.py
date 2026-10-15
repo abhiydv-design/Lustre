@@ -9,7 +9,7 @@ _tmp = tempfile.mkdtemp()
 os.environ.update({
     "DATA_DIR": _tmp, "DATABASE_URL": f"sqlite:///{_tmp}/test.db", "DEV_MODE": "1",
     "CUTOUT_PROVIDER": "threshold", "SCENE_PROVIDER": "mock", "UPSCALE_PROVIDER": "lanczos",
-    "FREE_CREDITS": "3", "PACK_SHOP_PRICE_INR": "999", "RAZORPAY_WEBHOOK_SECRET": "whsec_test",
+    "FREE_CREDITS": "3", "AUTO_JOBS": "", "PRERENDER_PER_JOB": "0", "PACK_SHOP_PRICE_INR": "999", "RAZORPAY_WEBHOOK_SECRET": "whsec_test",
 })
 
 
@@ -35,5 +35,5 @@ def client():
 
 @pytest.fixture
 def auth(client):
-    token = client.post("/auth/dev-login", json={"name": "Shree Jewellers"}).json()["token"]
+    token = client.post("/auth/start").json()["token"]
     return {"Authorization": f"Bearer {token}"}

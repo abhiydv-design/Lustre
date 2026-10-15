@@ -24,23 +24,39 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env          # then fill it in; export it or use a tool like direnv
 uvicorn app.main:app --reload # API docs at http://localhost:8000/docs
-pytest -q                     # 7 end-to-end tests, run fully offline with mock providers
+pytest -q                     # 13 end-to-end tests, run fully offline with mock providers
 ```
 
 To try it without any API keys, set `SCENE_PROVIDER=mock`, `UPSCALE_PROVIDER=lanczos`, `CUTOUT_PROVIDER=threshold`.
+
+## Built for zero friction
+
+The jeweller's whole path is: **open app → add photos → see photos → tap download.**
+
+| Friction removed | How |
+|---|---|
+| Sign-up wall | `POST /auth/start` creates a guest account with welcome credits on first open. Ask for a phone number later, only to recover the account. |
+| Forms on upload | Only photos are required. Metal is detected from the product's colours (one-tap `PATCH` to correct); type is optional. |
+| Rejected uploads | Too many photos, odd files or small images don't fail the upload. Usable photos go through, the rest get a polite notice, and each photo gets plain-language tips (blurry, dark, cut off, too far). |
+| Choosing before seeing | Uploading starts generating straight away (`AUTO_JOBS`, default 1 white catalog + 4 marble). "Choose a look" becomes optional. |
+| Waiting after paying | The first photos' 4K files are pre-rendered (`PRERENDER_PER_JOB`), and the app calls `/prepare` when a photo is opened full-screen. Download is usually instant; the credit is charged only on download. |
+| Out of credits | Download returns `402` with the packs, so the app opens checkout directly. The order carries `then_download`, and the photos are delivered automatically once payment lands. |
+| One photo at a time | `POST/GET /jobs/{id}/download-all` charges once for all and returns a zip. |
+| Confusing errors | Failed jobs return a short `message` the app can show as-is, and always say whether the user was charged. |
 
 ## Endpoints, by screen
 
 | Screen | Endpoint |
 |---|---|
-| Login (dev only) | `POST /auth/dev-login` → bearer token |
+| First open | `POST /auth/start` → bearer token |
 | Home | `GET /me` (credits), `GET /shoots` (recent shoots) |
-| Upload / Choose a look | `GET /catalog`, `POST /shoots` (multipart: `jewellery_type`, `metal`, 1–4 `files`) |
-| Generate | `POST /shoots/{id}/jobs` `{style, format, count}` |
-| Generating | `GET /jobs/{id}`: poll every 1–2 s; `steps` mirrors the progress list |
-| Results | `GET /variations/{id}/preview`, `GET /variations/{id}/original` (compare) |
-| Download 4K | `POST /variations/{id}/download` (charges once), then poll `GET` until 200 |
-| Credits | `GET /credits/packs`, `POST /payments/orders`, `POST /payments/webhook` |
+| Upload | `POST /shoots` (multipart: 1+ `files`; optional `jewellery_type`, `metal`, `format`, `auto_generate`) → shoot, photo tips, auto-started jobs |
+| Detected details | `GET /shoots/{id}`, `PATCH /shoots/{id}` |
+| Generating | `GET /jobs/{id}`: poll every 1–2 s; `steps` mirrors the progress list; `instant` marks photos whose 4K is ready |
+| Another look (optional) | `GET /catalog`, `POST /shoots/{id}/jobs` `{style, format, count}` |
+| Results | `GET /variations/{id}/preview`, `GET /variations/{id}/original`, `POST /variations/{id}/prepare` |
+| Download | `POST /variations/{id}/download` then `GET` (usually ready immediately); `POST/GET /jobs/{id}/download-all` |
+| Credits | `GET /credits/packs`, `POST /payments/orders` `{pack, then_download}`, `POST /payments/webhook` |
 
 The 4K response carries `X-Fidelity` and, when the source photo was too small, `X-Quality-Warning` (show it to the jeweller).
 
@@ -52,7 +68,7 @@ The 4K response carries `X-Fidelity` and, when the source photo was too small, `
 
 ## Before real customers
 
-- Replace dev login with phone OTP.
+- Add optional phone-number verification to recover accounts, and limit welcome credits per device/phone so they can't be farmed.
 - Move `BackgroundTasks` to a real queue (RQ, Celery or Arq) and run workers separately; a 4K render takes 10–30 s with hosted models.
 - Swap local disk (`app/storage.py`) for S3 or Cloudflare R2, and serve images via signed URLs.
 - SQLite → Postgres (just change `DATABASE_URL`).

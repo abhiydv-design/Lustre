@@ -18,16 +18,10 @@ button{font:inherit;cursor:pointer}
 </helmet>
 <div style="width: 390px; height: 844px; background: #121015; color: #F3EEE6; font-family: 'Manrope', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
   <div style="display: flex; align-items: center; gap: 8px; padding: 16px 12px 8px">
-    <a href="Style.dc.html" aria-label="Back to looks" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #F3EEE6">
+    <a href="Upload.dc.html" aria-label="Back to photos" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #F3EEE6">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
     </a>
     <div style="flex: 1 1 auto; font-size: 17px; font-weight: 700">New shoot</div>
-    <div style="font-size: 13px; color: #B9B0BE; padding-right: 8px">Step 3 of 3</div>
-  </div>
-  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 0 20px 8px" aria-hidden="true">
-    <div style="height: 4px; border-radius: 4px; background: #D4B26A"></div>
-    <div style="height: 4px; border-radius: 4px; background: #D4B26A"></div>
-    <div style="height: 4px; border-radius: 4px; background: #D4B26A"></div>
   </div>
 
   <div style="flex: 1 1 auto; overflow-y: auto; padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 22px">
@@ -68,7 +62,7 @@ button{font:inherit;cursor:pointer}
       </a>
     </sc-if>
     <sc-if value="{{working}}" hint-placeholder-val="{{true}}">
-      <button type="button" onClick="{{replay}}" style="width: 100%; min-height: 52px; border-radius: 14px; border: 1px solid #3A3440; background: #1C1920; color: #D6CFD9; font-weight: 600; font-size: 15px">Working… you can leave this screen</button>
+      <button type="button" onClick="{{replay}}" style="width: 100%; min-height: 52px; border-radius: 14px; border: 1px solid #3A3440; background: #1C1920; color: #D6CFD9; font-weight: 600; font-size: 15px">Working… we'll notify you when it's ready</button>
     </sc-if>
   </div>
 </div>

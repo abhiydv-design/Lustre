@@ -76,7 +76,7 @@ def test_out_of_credits_and_unavailable_style(client, auth):
 
 def test_other_users_cannot_see_photos(client, auth):
     job = _generate(client, auth, _upload(client, auth, n=1), count=1)
-    other = {"Authorization": "Bearer " + client.post("/auth/dev-login", json={"name": "x"}).json()["token"]}
+    other = {"Authorization": "Bearer " + client.post("/auth/start").json()["token"]}
     assert client.get(f"/variations/{job['variations'][0]['id']}/preview", headers=other).status_code == 404
 
 
@@ -98,7 +98,7 @@ def test_failed_4k_render_refunds_credit(client, auth, monkeypatch):
     vid = job["variations"][0]["id"]
     monkeypatch.setattr(run, "render_final", lambda *a, **k: (_ for _ in ()).throw(RuntimeError("upscaler down")))
     client.post(f"/variations/{vid}/download", headers=auth)
-    assert client.get(f"/variations/{vid}/download", headers=auth).json()["status"] == "failed"
+    assert client.get(f"/variations/{vid}/download", headers=auth).json()["status"] == "unpaid"  # refunded, can retry
     assert client.get("/me", headers=auth).json()["credits"] == 3  # charged, then refunded
     monkeypatch.undo()
     client.post(f"/variations/{vid}/download", headers=auth)  # retry charges again and succeeds
