@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lustre – Generating</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121015}
+*{box-sizing:border-box}
+a{color:#D4B26A}a:hover{color:#E8CB8A}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #121015; color: #F3EEE6; font-family: 'Manrope', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 12px 8px">
+    <a href="Style.dc.html" aria-label="Back to looks" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #F3EEE6">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <div style="flex: 1 1 auto; font-size: 17px; font-weight: 700">New shoot</div>
+    <div style="font-size: 13px; color: #B9B0BE; padding-right: 8px">Step 3 of 3</div>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 0 20px 8px" aria-hidden="true">
+    <div style="height: 4px; border-radius: 4px; background: #D4B26A"></div>
+    <div style="height: 4px; border-radius: 4px; background: #D4B26A"></div>
+    <div style="height: 4px; border-radius: 4px; background: #D4B26A"></div>
+  </div>
+
+  <div style="flex: 1 1 auto; overflow-y: auto; padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 22px">
+    <div style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 30px; line-height: 1.1; font-weight: 600">{{heading}}</div>
+
+    <div style="aspect-ratio: 1 / 1; border-radius: 22px; background: {{stageBg}}; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden">
+      <svg viewBox="0 0 96 96" width="58%" height="58%" fill="none" aria-hidden="true"><ellipse cx="48" cy="86" rx="22" ry="4" fill="#000000" opacity="{{shadow}}"></ellipse><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path><path d="M36 30 H60 M42 22 L48 30 L54 22 M48 30 V42" stroke="#9FB3C2" stroke-width="1"></path></svg>
+      <span style="position: absolute; left: 12px; bottom: 12px; padding: 6px 10px; border-radius: 999px; background: #121015E6; color: #F3EEE6; font-size: 12px; font-weight: 700">{{stageLabel}}</span>
+    </div>
+
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px" aria-live="polite">
+      <sc-for list="{{steps}}" as="s" hint-placeholder-count="4">
+        <li style="display: flex; align-items: center; gap: 14px; min-height: 48px">
+          <span style="width: 28px; height: 28px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: {{s.dot}}; border: 2px solid {{s.ring}}; color: #1A1408">
+            <sc-if value="{{s.done}}" hint-placeholder-val="{{false}}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+            </sc-if>
+          </span>
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 15px; font-weight: 700; color: {{s.ink}}">{{s.label}}</span>
+            <span style="font-size: 12px; color: #B9B0BE">{{s.sub}}</span>
+          </div>
+        </li>
+      </sc-for>
+    </ol>
+
+    <div style="display: flex; gap: 10px; padding: 14px; border-radius: 14px; background: #1C1920; border: 1px solid #3A3440">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9FD3AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 1px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <div style="font-size: 13px; line-height: 1.5; color: #D6CFD9">Your piece is never redrawn. Only the scene, light and shadow around it are created.</div>
+    </div>
+  </div>
+
+  <div style="padding: 12px 20px 20px; border-top: 1px solid #2E2934; background: #17141B">
+    <sc-if value="{{done}}" hint-placeholder-val="{{false}}">
+      <a href="Results.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; background: #D4B26A; color: #1A1408; font-weight: 700; font-size: 16px; text-decoration: none">
+        See your photos
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+      </a>
+    </sc-if>
+    <sc-if value="{{working}}" hint-placeholder-val="{{true}}">
+      <button type="button" onClick="{{replay}}" style="width: 100%; min-height: 52px; border-radius: 14px; border: 1px solid #3A3440; background: #1C1920; color: #D6CFD9; font-weight: 600; font-size: 15px">Working… you can leave this screen</button>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 0 };
+  }
+  componentDidMount() {
+    this.start();
+  }
+  componentWillUnmount() {
+    if (this.timer) clearInterval(this.timer);
+  }
+  start() {
+    var self = this;
+    if (this.timer) clearInterval(this.timer);
+    this.setState({ step: 0 });
+    this.timer = setInterval(function () {
+      var n = self.state.step + 1;
+      self.setState({ step: n });
+      if (n >= 4) { clearInterval(self.timer); self.timer = null; }
+    }, 1300);
+  }
+  renderVals() {
+    var self = this;
+    var step = this.state.step;
+    var defs = [
+      { label: 'Cutting out your piece', sub: 'Exact edges, stones and prongs kept' },
+      { label: 'Building the marble scene', sub: 'Background only — product untouched' },
+      { label: 'Matching light and shadow', sub: 'So it sits naturally in the scene' },
+      { label: 'Upscaling to 4K', sub: '3840 × 3840 px, print-ready' }
+    ];
+    var stageBgs = ['#E9E6E1', 'repeating-conic-gradient(#2A2630 0% 25%, #221E27 0% 50%) 50% / 24px 24px', 'linear-gradient(135deg,#F4F2EE 0%,#E3DED7 42%,#F7F5F1 58%,#D9D3CA 100%)', 'linear-gradient(135deg,#F4F2EE 0%,#E3DED7 42%,#F7F5F1 58%,#D9D3CA 100%)', 'linear-gradient(135deg,#F4F2EE 0%,#E3DED7 42%,#F7F5F1 58%,#D9D3CA 100%)'];
+    var stageLabels = ['Your photo', 'Product isolated', 'Scene built', 'Shadows added', '4K ready'];
+    return {
+      done: step >= 4,
+      working: step < 4,
+      heading: step >= 4 ? 'Your photos are ready' : 'Creating your photos',
+      stageBg: stageBgs[Math.min(step, 4)],
+      stageLabel: stageLabels[Math.min(step, 4)],
+      shadow: step >= 3 ? 0.22 : 0,
+      replay: function () { self.start(); },
+      steps: defs.map(function (d, i) {
+        var done = i < step, active = i === step;
+        return Object.assign({}, d, {
+          done: done,
+          dot: done ? '#D4B26A' : 'transparent',
+          ring: done || active ? '#D4B26A' : '#4A4350',
+          ink: done || active ? '#F3EEE6' : '#8F8695'
+        });
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

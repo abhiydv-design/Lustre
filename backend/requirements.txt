@@ -1,0 +1,16 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sqlalchemy>=2.0
+pillow>=10.0
+numpy>=1.26
+python-multipart>=0.0.9
+httpx>=0.27
+# Hosted AI models (scene generation + 4K upscaling)
+replicate>=1.0
+# Production-quality product cut-outs (BiRefNet). Optional: the "threshold"
+# cut-out works without it for photos on a plain light background.
+rembg[cpu]>=2.0.60
+# iPhone HEIC uploads
+pillow-heif>=0.16
+# tests
+pytest>=8.0

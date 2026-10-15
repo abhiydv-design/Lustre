@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lustre – Buy credits</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121015}
+*{box-sizing:border-box}
+a{color:#D4B26A}a:hover{color:#E8CB8A}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #121015; color: #F3EEE6; font-family: 'Manrope', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 12px 8px">
+    <a href="Main.dc.html" aria-label="Back to home" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #F3EEE6">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <div style="flex: 1 1 auto; font-size: 17px; font-weight: 700">Credits</div>
+  </div>
+
+  <div style="flex: 1 1 auto; overflow-y: auto; padding: 12px 20px 20px; display: flex; flex-direction: column; gap: 20px">
+    <div style="background: #1C1920; border: 1px solid #3A3440; border-radius: 22px; padding: 22px; display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 13px; font-weight: 600; color: #B9B0BE">Your balance</span>
+      <span style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 48px; line-height: 1; font-weight: 600; color: #D4B26A">24</span>
+      <span style="font-size: 14px; color: #D6CFD9">1 credit = 1 final 4K photo you download. Previews are free.</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 18px; font-weight: 700">Top up</h2>
+      <sc-for list="{{packs}}" as="p" hint-placeholder-count="3">
+        <button type="button" onClick="{{p.pick}}" aria-pressed="{{p.on}}" style="width: 100%; min-height: 76px; padding: 14px 16px; border-radius: 16px; border: 2px solid {{p.border}}; background: #1C1920; color: #F3EEE6; display: flex; align-items: center; gap: 14px; text-align: left">
+          <span style="width: 22px; height: 22px; border-radius: 50%; flex: 0 0 auto; border: 2px solid {{p.border}}; display: flex; align-items: center; justify-content: center">
+            <span style="width: 10px; height: 10px; border-radius: 50%; background: {{p.dot}}"></span>
+          </span>
+          <span style="flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px">
+            <span style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px">{{p.label}}
+              <sc-if value="{{p.popular}}" hint-placeholder-val="{{false}}">
+                <span style="padding: 2px 8px; border-radius: 999px; background: #D4B26A; color: #1A1408; font-size: 11px; font-weight: 700">Most picked</span>
+              </sc-if>
+            </span>
+            <span style="font-size: 13px; color: #B9B0BE">{{p.sub}}</span>
+          </span>
+          <span style="font-size: 16px; font-weight: 700">{{p.price}}</span>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #D6CFD9">
+      <div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4B26A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 2px"><path d="M20 6 9 17l-5-5"></path></svg>Credits never expire</div>
+      <div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4B26A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 2px"><path d="M20 6 9 17l-5-5"></path></svg>Free re-generate if the piece looks altered</div>
+      <div style="display: flex; gap: 10px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4B26A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto; margin-top: 2px"><path d="M20 6 9 17l-5-5"></path></svg>GST invoice for every purchase</div>
+    </div>
+  </div>
+
+  <div style="padding: 12px 20px 20px; border-top: 1px solid #2E2934; background: #17141B; display: flex; flex-direction: column; gap: 8px">
+    <sc-if value="{{notPaid}}" hint-placeholder-val="{{true}}">
+      <button type="button" onClick="{{pay}}" style="width: 100%; min-height: 52px; border-radius: 14px; border: none; background: #D4B26A; color: #1A1408; font-weight: 700; font-size: 16px">{{payLabel}}</button>
+    </sc-if>
+    <sc-if value="{{paid}}" hint-placeholder-val="{{false}}">
+      <a href="Upload.dc.html" role="status" style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; background: #16231A; border: 1px solid #2F5A3B; color: #CFEBD7; font-weight: 700; font-size: 15px; text-decoration: none">Credits added · start a shoot</a>
+    </sc-if>
+    <div style="font-size: 12px; color: #B9B0BE; text-align: center">UPI, cards and net banking</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { pack: 'Shop', paid: false };
+  }
+  renderVals() {
+    var self = this;
+    var packs = [
+      { label: 'Starter', sub: '10 credits · try a few pieces', price: '₹[PRICE]' },
+      { label: 'Shop', sub: '50 credits · a new collection', price: '₹[PRICE]', popular: true },
+      { label: 'Studio', sub: '200 credits · full catalogue', price: '₹[PRICE]' }
+    ];
+    var current = this.state.pack;
+    var chosen = packs.filter(function (p) { return p.label === current; })[0];
+    return {
+      paid: !!this.state.paid,
+      notPaid: !this.state.paid,
+      payLabel: 'Pay ' + chosen.price + ' · ' + chosen.label,
+      pay: function () { self.setState({ paid: true }); },
+      packs: packs.map(function (p) {
+        var on = p.label === current;
+        return Object.assign({ popular: false }, p, {
+          on: on,
+          border: on ? '#D4B26A' : '#3A3440',
+          dot: on ? '#D4B26A' : 'transparent',
+          pick: function () { self.setState({ pack: p.label, paid: false }); }
+        });
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

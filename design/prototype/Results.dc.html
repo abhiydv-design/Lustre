@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lustre – Your photos</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#121015}
+*{box-sizing:border-box}
+a{color:#D4B26A}a:hover{color:#E8CB8A}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; background: #121015; color: #F3EEE6; font-family: 'Manrope', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; align-items: center; gap: 8px; padding: 16px 12px 8px">
+    <a href="Main.dc.html" aria-label="Back to home" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 12px; color: #F3EEE6">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <div style="flex: 1 1 auto; font-size: 17px; font-weight: 700">Solitaire ring · Marble</div>
+    <div style="font-size: 13px; color: #B9B0BE; padding-right: 8px">4 ready</div>
+  </div>
+
+  <div style="flex: 1 1 auto; overflow-y: auto; padding: 8px 20px 20px; display: flex; flex-direction: column; gap: 16px">
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px; border-radius: 12px; background: #1C1920; border: 1px solid #3A3440" role="group" aria-label="View">
+      <button type="button" onClick="{{showSingle}}" aria-pressed="{{single}}" style="min-height: 44px; border-radius: 9px; border: none; background: {{tabA}}; color: {{tabAInk}}; font-weight: 700; font-size: 14px">Photo</button>
+      <button type="button" onClick="{{showCompare}}" aria-pressed="{{compare}}" style="min-height: 44px; border-radius: 9px; border: none; background: {{tabB}}; color: {{tabBInk}}; font-weight: 700; font-size: 14px">Compare with original</button>
+    </div>
+
+    <sc-if value="{{single}}" hint-placeholder-val="{{true}}">
+      <div style="aspect-ratio: 1 / 1; border-radius: 22px; background: {{current.bg}}; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center; position: relative">
+        <svg viewBox="0 0 96 96" width="60%" height="60%" fill="none" aria-hidden="true"><ellipse cx="{{current.sx}}" cy="86" rx="24" ry="4" fill="#000000" opacity="0.22"></ellipse><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path><path d="M36 30 H60 M42 22 L48 30 L54 22 M48 30 V42" stroke="#9FB3C2" stroke-width="1"></path></svg>
+        <span style="position: absolute; top: 12px; left: 12px; padding: 6px 10px; border-radius: 999px; background: #121015E6; color: #F3EEE6; font-size: 12px; font-weight: 700">4K · 3840 × 3840</span>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{compare}}" hint-placeholder-val="{{false}}">
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="aspect-ratio: 1 / 1; border-radius: 16px; background: #E4E0DA; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center">
+            <svg viewBox="0 0 96 96" width="66%" height="66%" fill="none" aria-hidden="true"><circle cx="48" cy="57" r="22" stroke="#B8954A" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#E6ECF0" stroke="#93A6B4" stroke-width="1.5" stroke-linejoin="round"></path></svg>
+          </div>
+          <span style="font-size: 13px; font-weight: 600; color: #B9B0BE; text-align: center">Your phone photo</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="aspect-ratio: 1 / 1; border-radius: 16px; background: {{current.bg}}; border: 1px solid #3A3440; display: flex; align-items: center; justify-content: center">
+            <svg viewBox="0 0 96 96" width="66%" height="66%" fill="none" aria-hidden="true"><ellipse cx="{{current.sx}}" cy="86" rx="24" ry="4" fill="#000000" opacity="0.22"></ellipse><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path><path d="M36 30 H60 M42 22 L48 30 L54 22 M48 30 V42" stroke="#9FB3C2" stroke-width="1"></path></svg>
+          </div>
+          <span style="font-size: 13px; font-weight: 600; color: #B9B0BE; text-align: center">Generated</span>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #16231A; border: 1px solid #2F5A3B">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9FD3AE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: 0 0 auto"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 14px; font-weight: 700; color: #CFEBD7">Product match checked</span>
+        <span style="font-size: 12px; color: #A9C9B2">Stones, shape and metal tone unchanged from your photo</span>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+      <sc-for list="{{variants}}" as="v" hint-placeholder-count="4">
+        <button type="button" onClick="{{v.pick}}" aria-pressed="{{v.on}}" aria-label="{{v.name}}" style="aspect-ratio: 1 / 1; padding: 0; border-radius: 12px; border: 2px solid {{v.border}}; background: {{v.bg}}; display: flex; align-items: center; justify-content: center">
+          <svg viewBox="0 0 96 96" width="70%" height="70%" fill="none" aria-hidden="true"><circle cx="48" cy="57" r="22" stroke="#C9A04E" stroke-width="7"></circle><path d="M36 30 L42 22 H54 L60 30 L48 42 Z" fill="#EEF4F8" stroke="#9FB3C2" stroke-width="1.5" stroke-linejoin="round"></path></svg>
+        </button>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+      <a href="Generating.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 12px; border: 1px solid #3A3440; background: #1C1920; color: #F3EEE6; font-size: 14px; font-weight: 600; text-decoration: none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"></path><path d="M21 3v5h-5"></path></svg>
+        More like this
+      </a>
+      <a href="Style.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 12px; border: 1px solid #3A3440; background: #1C1920; color: #F3EEE6; font-size: 14px; font-weight: 600; text-decoration: none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2"></circle><circle cx="17.5" cy="10.5" r="2"></circle><circle cx="8.5" cy="7.5" r="2"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1 0 1.6-.8 1.6-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.7-1.7 1.7-1.7H16c3.1 0 5.6-2.5 5.6-5.6C21.9 6 17.5 2 12 2z"></path></svg>
+        Try another look
+      </a>
+    </div>
+  </div>
+
+  <div style="padding: 12px 20px 20px; border-top: 1px solid #2E2934; background: #17141B; display: flex; flex-direction: column; gap: 8px">
+    <sc-if value="{{notSaved}}" hint-placeholder-val="{{true}}">
+      <button type="button" onClick="{{download}}" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; border: none; background: #D4B26A; color: #1A1408; font-weight: 700; font-size: 16px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>
+        Download in 4K · 1 credit
+      </button>
+    </sc-if>
+    <sc-if value="{{saved}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; border-radius: 14px; background: #16231A; border: 1px solid #2F5A3B; color: #CFEBD7; font-weight: 700; font-size: 15px" role="status">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+        Saved to your phone · 23 credits left
+      </div>
+    </sc-if>
+    <div style="font-size: 12px; color: #B9B0BE; text-align: center">PNG · no watermark · free to use on any store</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { pick: 0, view: 'single', saved: false };
+  }
+  renderVals() {
+    var self = this;
+    var defs = [
+      { name: 'Variation 1, soft left light', bg: 'linear-gradient(135deg,#F4F2EE 0%,#E3DED7 42%,#F7F5F1 58%,#D9D3CA 100%)', sx: 54 },
+      { name: 'Variation 2, warm veined marble', bg: 'linear-gradient(115deg,#F2EDE6 0%,#DCCFC0 38%,#F6F1EA 55%,#CFC2B3 100%)', sx: 44 },
+      { name: 'Variation 3, cool grey marble', bg: 'linear-gradient(150deg,#ECEDEF 0%,#D2D5DA 45%,#F2F3F5 62%,#C8CCD2 100%)', sx: 50 },
+      { name: 'Variation 4, dark marble', bg: 'linear-gradient(135deg,#3A3836 0%,#24221F 45%,#45423E 60%,#1C1A18 100%)', sx: 56 }
+    ];
+    var pick = this.state.pick;
+    var single = this.state.view === 'single';
+    return {
+      current: defs[pick],
+      single: single,
+      compare: !single,
+      tabA: single ? '#D4B26A' : 'transparent',
+      tabAInk: single ? '#1A1408' : '#D6CFD9',
+      tabB: single ? 'transparent' : '#D4B26A',
+      tabBInk: single ? '#D6CFD9' : '#1A1408',
+      showSingle: function () { self.setState({ view: 'single' }); },
+      showCompare: function () { self.setState({ view: 'compare' }); },
+      saved: !!this.state.saved,
+      notSaved: !this.state.saved,
+      download: function () { self.setState({ saved: true }); },
+      variants: defs.map(function (d, i) {
+        return Object.assign({}, d, {
+          on: i === pick,
+          border: i === pick ? '#D4B26A' : '#3A3440',
+          pick: function () { self.setState({ pick: i, saved: false }); }
+        });
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
