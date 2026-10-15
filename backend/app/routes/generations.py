@@ -13,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 
 from .. import credits, storage
 from ..config import get_settings
-from ..db import CreditEntry, Generation, Product, Report, SourcePhoto, User, now
+from ..db import CreditEntry, Event, Generation, Product, Report, SourcePhoto, User, now
 from ..deps import current_user, get_db, signed_in_user
 from ..pipeline.composite import watermark
 from ..pipeline.geometry import ASPECTS
@@ -142,9 +142,12 @@ def generate(product_id: str, body: GenerateIn, tasks: BackgroundTasks,
     if body.confirm_cost != cost:
         raise HTTPException(409, {"code": "cost_changed", "cost": cost,
                                   "message": f"This image costs {cost} credit(s). Please confirm again."})
+    settings = get_settings()
+    uses_ai = STYLES[preset].flat_color is None
     g = Generation(user_id=user.id, product_id=product.id, photo_id=photo.id, output=body.output,
                    preset=preset, aspect=aspect, marketplace_preset=mp, cost=cost,
-                   idempotency_key=idempotency_key)
+                   idempotency_key=idempotency_key,
+                   provider_cost_inr=(settings.cost_per_scene_inr + settings.cost_per_upscale_inr) if uses_ai else 0.0)
     s.add(g)
     try:
         s.flush()
@@ -187,7 +190,8 @@ def generation_status(gen_id: str, user: User = Depends(current_user), s=Depends
             "original_deleted": g.photo_id is None,
             "steps": [{"id": k, "label": lbl, "done": i < cur or g.status == "done", "active": i == cur and g.status != "done"}
                       for i, (k, lbl) in enumerate(STAGES)],
-            "reports": [{"kind": r.kind, "category": r.category, "refund": r.refund} for r in reports],
+            "reports": [{"kind": r.kind, "category": r.category, "refund": r.refund,
+                         "message": r.user_message} for r in reports],
             "notice": "Please check the details match your piece before using this image to sell it."}
 
 
@@ -235,11 +239,28 @@ def download(gen_id: str, user: User = Depends(signed_in_user), s=Depends(get_db
     product = s.get(Product, g.product_id)
     ext = g.final_key.rsplit(".", 1)[-1]
     safe = "".join(c if c.isalnum() else "-" for c in product.name).strip("-").lower() or "jewellery"
+    s.add(Event(user_id=user.id, generation_id=g.id, type="download"))
+    s.commit()
     headers = {"X-Pixel-Match": f"{g.fidelity:.4f}"}
     if g.warning:
         headers["X-Quality-Warning"] = g.warning
     return FileResponse(storage.path_for(g.final_key), media_type="image/png" if ext == "png" else "image/jpeg",
                         filename=f"{safe}-{g.preset}-{g.width}x{g.height}.{ext}", headers=headers)
+
+
+class EventIn(BaseModel):
+    type: str                       # share
+    channel: str | None = Field(None, max_length=30)   # whatsapp, instagram, other
+
+
+@router.post("/generations/{gen_id}/events", status_code=204)
+def record_event(gen_id: str, body: EventIn, user: User = Depends(current_user), s=Depends(get_db)):
+    """The app reports shares (from the phone's share sheet) so the share rate can be measured (§16.1)."""
+    own_generation(s, user, gen_id)
+    if body.type != "share":
+        raise HTTPException(422, "type must be 'share'")
+    s.add(Event(user_id=user.id, generation_id=gen_id, type="share", channel=(body.channel or "other").lower()))
+    s.commit()
 
 
 class ReportIn(BaseModel):

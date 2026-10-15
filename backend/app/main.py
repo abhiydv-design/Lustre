@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .config import get_settings
 from .db import init_db
 from .pipeline.run import recover_interrupted
-from .routes import auth, generations, payments, products
+from .routes import admin, auth, generations, payments, products
 
 
 def create_app() -> FastAPI:
@@ -28,6 +28,7 @@ def create_app() -> FastAPI:
     app.include_router(products.router)
     app.include_router(generations.router)
     app.include_router(payments.router)
+    app.include_router(admin.router)
 
     @app.get("/health")
     def health():

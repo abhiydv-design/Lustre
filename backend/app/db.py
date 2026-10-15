@@ -86,6 +86,7 @@ class SourcePhoto(Base):
     width: Mapped[int] = mapped_column(Integer)
     height: Mapped[int] = mapped_column(Integer)
     hints: Mapped[str] = mapped_column(Text, default="[]")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
     product: Mapped[Product] = relationship(back_populates="photos")
 
 
@@ -115,7 +116,9 @@ class Generation(Base):
     fidelity: Mapped[float | None] = mapped_column(Float, nullable=True)
     warning: Mapped[str | None] = mapped_column(Text, nullable=True)
     review: Mapped[str] = mapped_column(String(20), default="pending")  # pending|accepted|reported
+    provider_cost_inr: Mapped[float] = mapped_column(Float, default=0.0)  # estimate, for cost per image (§16.3)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class Report(Base):
@@ -127,11 +130,38 @@ class Report(Base):
     kind: Mapped[str] = mapped_column(String(20))         # product_detail | visual_quality
     category: Mapped[str] = mapped_column(String(40))
     note: Mapped[str] = mapped_column(Text, default="")
-    refund: Mapped[str] = mapped_column(String(20))       # refunded|under_review|not_eligible|duplicate
+    refund: Mapped[str] = mapped_column(String(20))       # refunded|under_review|declined|not_eligible|duplicate
     # Snapshot for analysis that survives image deletion
     product_category: Mapped[str] = mapped_column(String(20), default="")
     preset: Mapped[str] = mapped_column(String(30), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    # Set when a person on the team resolves an under_review report
+    resolved_by: Mapped[str | None] = mapped_column(String(60), nullable=True)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    user_message: Mapped[str | None] = mapped_column(Text, nullable=True)     # shown to the jeweller
+    internal_note: Mapped[str | None] = mapped_column(Text, nullable=True)    # team only
+
+
+class Event(Base):
+    """Things the database can't otherwise tell us, for usage metrics (§16.1): downloads and shares."""
+    __tablename__ = "events"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(32), index=True)
+    generation_id: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    type: Mapped[str] = mapped_column(String(20))         # download | share
+    channel: Mapped[str | None] = mapped_column(String(30), nullable=True)  # whatsapp, instagram, other
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
+
+
+class AdminAudit(Base):
+    """Every team action and every look at a customer image (§14: limited, governed support access)."""
+    __tablename__ = "admin_audit"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    admin: Mapped[str] = mapped_column(String(60))
+    action: Mapped[str] = mapped_column(String(40))       # view_image | resolve_report | view_queue | view_metrics
+    target: Mapped[str] = mapped_column(String(80), default="")
+    detail: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now, index=True)
 
 
 class Payment(Base):

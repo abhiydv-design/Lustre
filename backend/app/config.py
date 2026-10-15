@@ -51,6 +51,9 @@ class Settings:
     max_photos_per_product: int
 
     sms_provider: str
+    admin_tokens: dict[str, str]      # token -> admin name
+    cost_per_scene_inr: float
+    cost_per_upscale_inr: float
 
     pack_prices_inr: dict[str, int | None]
     razorpay_key_id: str | None
@@ -84,6 +87,11 @@ def get_settings() -> Settings:
         max_upload_mb=_int("MAX_UPLOAD_MB", 25),
         max_photos_per_product=_int("MAX_PHOTOS_PER_PRODUCT", 8),
         sms_provider=_env("SMS_PROVIDER", "console"),
+        admin_tokens={tok: name for name, _, tok in
+                      (pair.strip().partition(":") for pair in _env("ADMIN_TOKENS", "").split(",") if pair.strip())
+                      if tok},
+        cost_per_scene_inr=float(_env("COST_PER_SCENE_INR", "0")),
+        cost_per_upscale_inr=float(_env("COST_PER_UPSCALE_INR", "0")),
         pack_prices_inr={
             "starter": _price("PACK_STARTER_PRICE_INR"),
             "shop": _price("PACK_SHOP_PRICE_INR"),

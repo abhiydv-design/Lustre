@@ -35,10 +35,27 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env            # fill in, then export (or use direnv)
 uvicorn app.main:app --reload   # API docs at http://localhost:8000/docs
-pytest -q                       # 25 tests (API + evaluation harness), run offline with mock providers
+pytest -q                       # 31 tests (API, operations console, evaluation harness), offline with mock providers
 ```
 
 No API keys needed to try it: `SCENE_PROVIDER=mock UPSCALE_PROVIDER=lanczos CUTOUT_PROVIDER=threshold`. With `DEV_MODE=1`, sign-in codes are returned in the API response.
+
+## Operations console (`/admin`)
+
+For the team, not jewellers. Set `ADMIN_TOKENS=name:long-random-token,...` and open `/admin`.
+
+- **Reports:**
+  - Detail claims beyond the automatic refund limit wait here.
+  - Staff compare the original and the output (hover to magnify), see the customer's history, then approve or decline. Declining requires a message to the customer.
+  - The customer sees the outcome on the image, and approved refunds appear in their credit history.
+- **Metrics:** every spec §16 usage, quality and business measure, for 7, 30, 90 or 365 days. Quality is also broken down by category, metal, look and photo condition. Set `COST_PER_SCENE_INR` and `COST_PER_UPSCALE_INR` so the cost per image is filled in.
+- **Access log:** every action, and every time staff open a customer image.
+- **Access to customer images (spec §14):**
+  - Staff can only open images through a report.
+  - Phone numbers are never shown; customers appear by a short id.
+  - Without `ADMIN_TOKENS`, `/admin` doesn't exist.
+
+The app should send share events with `POST /generations/{id}/events` `{"type": "share", "channel": "whatsapp"}`, so the share rate is measured.
 
 ## Fidelity evaluation
 
@@ -72,5 +89,6 @@ Errors the app should handle by `detail.code`:
 - **Verify model inputs.** Check the Replicate model names and input fields against each model's page, and pin versions. All model calls live in `app/pipeline/providers.py`.
 - **Add an SMS gateway** in `app/sms.py`. Indian SMS needs a DLT-registered sender ID and template.
 - **Set real prices** and `SECRET_KEY`, and turn `DEV_MODE=0`. The app refuses to start without a real key in production.
+- **Database migrations:** add Alembic before the first production deploy. New columns, like the ones the console added, don't apply to an existing database automatically.
 - **Infrastructure:** a real job queue instead of `BackgroundTasks`, S3 or R2 storage, and Postgres.
 - **Fill in marketplace presets** once their requirements are verified.

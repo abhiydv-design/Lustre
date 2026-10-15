@@ -20,7 +20,7 @@ from sqlalchemy import select
 
 from .. import credits, storage
 from ..config import get_settings
-from ..db import Generation, Product, SourcePhoto, new_session
+from ..db import Generation, Product, SourcePhoto, new_session, now
 from .composite import add_contact_shadow, fidelity, inpaint_inputs, paste_product
 from .cutout import get_cutout
 from .geometry import ASPECTS, plan, preview_size, rescale
@@ -137,7 +137,7 @@ def _encode(final: Image.Image, fmt: str, max_mb: float | None) -> tuple[bytes, 
 def refund_failed(gen_id: str, message: str) -> None:
     with new_session() as s:
         g = s.get(Generation, gen_id)
-        g.status, g.message = "failed", message
+        g.status, g.message, g.finished_at = "failed", message, now()
         user_id, cost = g.user_id, g.cost
         s.commit()
         if cost:
@@ -162,7 +162,7 @@ def process_generation(gen_id: str) -> None:
             raise RuntimeError(f"pixel check failed ({score:.4f})")
         base = f"products/{product_id}/gen_{gen_id}"
         data, ext = _encode(final, fmt, max_mb)
-        _set(gen_id, status="done", stage="ready", seed=seed, fidelity=score, warning=warning,
+        _set(gen_id, status="done", stage="ready", seed=seed, fidelity=score, warning=warning, finished_at=now(),
              width=final.width, height=final.height,
              scene_key=storage.save_image(f"{base}_scene.png", scene),
              preview_key=storage.save_image(f"{base}_preview.jpg", preview, quality=88),

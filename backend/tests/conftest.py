@@ -10,7 +10,7 @@ os.environ.update({
     "DATA_DIR": _tmp, "DATABASE_URL": f"sqlite:///{_tmp}/test.db", "DEV_MODE": "1",
     "CUTOUT_PROVIDER": "threshold", "SCENE_PROVIDER": "mock", "UPSCALE_PROVIDER": "lanczos",
     "TRIAL_CREDITS": "3", "INITIAL_GENERATION_COST": "1", "ADDITIONAL_GENERATION_COST": "1",
-    "QUALITY_REFUND_AUTO_LIMIT": "2", "PACK_SHOP_PRICE_INR": "999", "RAZORPAY_WEBHOOK_SECRET": "whsec_test",
+    "QUALITY_REFUND_AUTO_LIMIT": "2", "ADMIN_TOKENS": "priya:tok-priya,rahul:tok-rahul", "COST_PER_SCENE_INR": "2.5", "COST_PER_UPSCALE_INR": "1.5", "PACK_SHOP_PRICE_INR": "999", "RAZORPAY_WEBHOOK_SECRET": "whsec_test",
 })
 
 
