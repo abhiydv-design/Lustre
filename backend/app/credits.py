@@ -14,12 +14,12 @@ class InsufficientCredits(Exception):
         self.needed, self.balance = needed, balance
 
 
-def apply(s: Session, user_id: str, delta: int, reason: str, ref: str) -> bool:
+def apply(s: Session, user_id: str, delta: int, reason: str, ref: str, note: str = "") -> bool:
     """Returns False if this ref was already applied. Raises InsufficientCredits on overdraw."""
     if s.scalar(select(CreditEntry.id).where(CreditEntry.ref == ref)):
         return False
     try:
-        s.add(CreditEntry(user_id=user_id, delta=delta, reason=reason, ref=ref))
+        s.add(CreditEntry(user_id=user_id, delta=delta, reason=reason, ref=ref, note=note))
         s.flush()
     except IntegrityError:
         s.rollback()

@@ -9,7 +9,8 @@ _tmp = tempfile.mkdtemp()
 os.environ.update({
     "DATA_DIR": _tmp, "DATABASE_URL": f"sqlite:///{_tmp}/test.db", "DEV_MODE": "1",
     "CUTOUT_PROVIDER": "threshold", "SCENE_PROVIDER": "mock", "UPSCALE_PROVIDER": "lanczos",
-    "FREE_CREDITS": "3", "AUTO_JOBS": "", "PRERENDER_PER_JOB": "0", "PACK_SHOP_PRICE_INR": "999", "RAZORPAY_WEBHOOK_SECRET": "whsec_test",
+    "TRIAL_CREDITS": "3", "INITIAL_GENERATION_COST": "1", "ADDITIONAL_GENERATION_COST": "1",
+    "QUALITY_REFUND_AUTO_LIMIT": "2", "PACK_SHOP_PRICE_INR": "999", "RAZORPAY_WEBHOOK_SECRET": "whsec_test",
 })
 
 
@@ -33,7 +34,39 @@ def client():
     return TestClient(app)
 
 
+def new_phone() -> str:
+    import secrets
+    return str(9_000_000_000 + secrets.randbelow(999_999_999))
+
+
 @pytest.fixture
-def auth(client):
-    token = client.post("/auth/start").json()["token"]
-    return {"Authorization": f"Bearer {token}"}
+def guest(client):
+    return {"Authorization": "Bearer " + client.post("/auth/start").json()["token"]}
+
+
+def sign_in(client, headers=None, phone=None):
+    phone = phone or new_phone()
+    code = client.post("/auth/otp/request", json={"phone": phone}).json()["dev_code"]
+    r = client.post("/auth/otp/verify", json={"phone": phone, "code": code}, headers=headers or {})
+    assert r.status_code == 200, r.text
+    return {"Authorization": "Bearer " + r.json()["token"]}, phone
+
+
+@pytest.fixture
+def member(client):
+    return sign_in(client)[0]
+
+
+def make_product(client, auth, category="ring", photos=1):
+    p = client.post("/products", headers=auth, json={"category": category}).json()
+    files = [("files", (f"p{i}.jpg", ring_photo(), "image/jpeg")) for i in range(photos)]
+    r = client.post(f"/products/{p['id']}/photos", headers=auth, files=files)
+    assert r.status_code == 201, r.text
+    return p["id"]
+
+
+def generate(client, auth, product_id, preset="marble", aspect="1:1", **extra):
+    cost = client.get(f"/products/{product_id}/quote", headers=auth).json()["cost"]
+    r = client.post(f"/products/{product_id}/generations", headers=auth,
+                    json={"preset": preset, "aspect_ratio": aspect, "confirm_cost": cost, **extra})
+    return r

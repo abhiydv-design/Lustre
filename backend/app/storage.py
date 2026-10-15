@@ -35,3 +35,17 @@ def load_image(key: str) -> Image.Image:
     image = Image.open(path_for(key))
     image.load()
     return image
+
+
+def delete(key: str | None) -> None:
+    """Remove a stored file. Missing files are fine (deleting twice is not an error)."""
+    if key:
+        path_for(key).unlink(missing_ok=True)
+
+
+def delete_prefix(prefix: str) -> None:
+    """Remove a whole folder of stored files (e.g. everything for one product)."""
+    import shutil
+    folder = path_for(prefix)
+    if folder.is_dir():
+        shutil.rmtree(folder)

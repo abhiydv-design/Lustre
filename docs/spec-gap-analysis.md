@@ -1,43 +1,34 @@
 # Spec vs. current build
 
-Compares `docs/product-spec.md` (Jewellery Image Studio v1.0, the source of truth) with the code and prototype as of commit `8403a71`. Where they disagree, the spec wins unless the founder decides otherwise.
+Compares `docs/product-spec.md` (the source of truth) with the code. Updated after the spec-alignment pass.
 
-## Direct conflicts (built differently from the spec)
+## Founder decisions that refine the spec
 
-| Area | Spec says | Current build | Spec § |
-|---|---|---|---|
-| Sign-in | Registration and sign-in are required | Guest account on first open, no sign-in | 9.1 |
-| What a credit pays for | Credits are spent per **generation**; cost shown before each one; first image generated after the user confirms | Previews are free; credits are spent per **download**; 5 images start automatically on upload | 9.4, 9.7, 12.2 |
-| Number of images | One image by default; more only on a separate, priced action | 1 white + 4 marble automatically | 9.4 |
-| Category | User selects category; it is a required product field | Category optional ("auto"), metal auto-detected | 8, 9.3 |
-| Fidelity claims | Never claim guaranteed accuracy; user must verify | UI says "Your piece is unchanged" and "Product match checked" | 4, 9.5 |
-| Marketplace claims | Only label a preset marketplace-ready once requirements are verified and documented | Prototype says "Amazon · Flipkart ready"; code comment says "as marketplaces require" | 7.1, 13.2 |
-| Image types | V1 = catalogue + marketplace only; luxury and lifestyle deferred | Velvet tray, Silk drape and Festive presets look like luxury or lifestyle styling | 7 |
-| Unstated policies | Credit expiry, receipts undecided | Prototype promises "Credits never expire" and "GST invoice" | 9.7, 18 |
-| Name | Jewellery Image Studio | "Lustre" (placeholder) | header |
+- **Sign-in:** guest first; phone sign-in at the first save, download or purchase. The spec said sign-in comes first. Everything made as a guest is kept on sign-in.
+- **Credits:** per generation, one image at a time, cost shown and confirmed first (as in the spec). Downloads are free.
 
-## Missing (in the spec, not built)
+## Closed in this pass
 
-- **Product catalogue:** named product records, rename, delete, browse a product's image history (§9.3). We have unnamed "shoots" with no delete.
-- **Review actions:** Accept, report a product-detail issue (8 categories), report a visual-quality issue (6 categories), with reports stored for analysis (§9.5).
-- **Quality-failure refunds:** a credit refund when a user reports a changed jewellery detail (§12.3). We only refund technical failures.
-- **Deletion and privacy:** delete source photos, outputs and products; documented retention covering caches, backups and external processing (§9.8, §14).
-- **Hindi:** onboarding and interface in English and Hindi (§15).
-- **Onboarding:** a guided first-generation walkthrough (§15).
-- **Verified marketplace presets:** a spec record per marketplace with source and verification date (§13.2).
-- **Evaluation dataset:** the 10–20 item fidelity test set, severity labels (critical / major / minor / presentation-only) and a launch quality gate (§10.5–10.7, §11).
-- **Native share:** share to WhatsApp and other apps from the phone (§9.6). This belongs to the mobile app, which isn't built yet.
+| Spec | Now |
+|---|---|
+| §9.3 Catalogue: name, category, optional fields, rename, delete, image history | `/products` CRUD, suggested names, history per product |
+| §9.4 One image by default, cost before generating, extra variations charged separately | `quote` + `confirm_cost`; separate first and additional costs |
+| §9.5 Accept, report detail issue (8 categories), report quality issue (6 categories), stored for analysis | `/accept`, `/report`; reports keep a snapshot after image deletion |
+| §12.3 Refund for reported detail errors, guarded against duplicates and abuse | Once per image, monthly auto-limit, then manual review |
+| §9.7 / §19 No lost or duplicate charges on failure or interruption | Automatic technical refunds, restart recovery, `Idempotency-Key` |
+| §9.7 Understandable transactions | `GET /me/credits` with notes |
+| §9.8 / §14 Real deletion, documented | File deletion tested; `docs/data-retention.md` |
+| §7 V1 = catalogue and marketplace only | Velvet, Silk, Festive and On-model switched off |
+| §13.2 Only verified marketplace presets | Register in `marketplaces.py`; ships empty |
+| §4 Don't overclaim | API notice asks the user to check details; prototype copy softened |
+| §15 Hindi | Labels for categories and presets are in `/catalog`. Full interface text belongs in the app |
 
-## Already aligned
+## Still open
 
-- **Fidelity approach:** strict product fidelity through compositing the real product pixels; the AI only changes background, lighting and framing (§10.2).
-- **Before-and-after:** side-by-side compare with the original (§9.5).
-- **Technical failures:** automatic credit refund, plus idempotent charges so there are no duplicates (§9.7, §19).
-- **Photo guidance:** plain-language tips for blurry, dark, cropped or small photos, while still accepting a single usable photo (§9.2).
-- **Optional angles:** additional angles are optional, with up to 4 photos (§9.2).
-- **Aspect ratios:** multiple ratios are supported (§9.6).
-- **Privacy:** users can only see their own content, and the tests check this (§9.1, §14).
-- **Model-worn:** model-worn photography is disabled ("coming soon") (§7.2).
-- **No training:** no custom model training (§1, §11.5).
-- **Pricing:** prices are left as placeholders until validated (§12.4).
-- **Tech stack:** the spec leaves it undecided. The current Replicate + BiRefNet setup should be treated as a **provisional baseline** for the §16.4 Phase 3 evaluation, not a final choice; providers are swappable in `providers.py`.
+- **Marketplaces:** pick the first ones, verify their requirements, and add them to `marketplaces.py` (§13, §18 #2).
+- **Export details:** exact sizes, file types and limits for catalogue exports; the current 4K ratios are working defaults (§9.6, §18 #3).
+- **Fidelity evaluation:** the 10–20 item evaluation set, severity labels and the launch quality gate (§10.5–10.7, §11).
+- **Mobile app:** onboarding (English and Hindi), native share, and the phone sign-in screen. The prototype's flow still reflects the old free-preview model and needs a pass.
+- **Infrastructure:** an SMS gateway with DLT registration, a job queue, cloud storage, and Postgres.
+- **Retention decisions** listed in `docs/data-retention.md`.
+- **Pricing:** trial size, pack sizes and prices in INR (§12.4).

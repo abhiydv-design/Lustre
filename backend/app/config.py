@@ -30,6 +30,7 @@ class Settings:
     data_dir: Path
     database_url: str
     dev_mode: bool
+    secret_key: str
     brand_name: str
     cors_origins: list[str]
 
@@ -37,17 +38,18 @@ class Settings:
     rembg_model: str
     scene_provider: str
     upscale_provider: str
-    replicate_token: str | None
     flux_fill_model: str
     esrgan_model: str
-
     preview_long_side: int
-    preview_watermark: bool
-    free_credits: int
-    daily_preview_jobs: int
+
+    trial_credits: int
+    initial_generation_cost: int
+    additional_generation_cost: int
+    quality_refund_auto_limit: int  # automatic detail-error refunds per user per 30 days
     max_upload_mb: int
-    auto_jobs: list[tuple[str, int]]   # started the moment photos are uploaded
-    prerender_per_job: int             # 4K renders warmed in advance (free to the user, costs you upscaling)
+    max_photos_per_product: int
+
+    sms_provider: str
 
     pack_prices_inr: dict[str, int | None]
     razorpay_key_id: str | None
@@ -61,25 +63,25 @@ def get_settings() -> Settings:
     data_dir.mkdir(parents=True, exist_ok=True)
     return Settings(
         data_dir=data_dir,
-        database_url=_env("DATABASE_URL", f"sqlite:///{data_dir / 'lustre.db'}"),
+        database_url=_env("DATABASE_URL", f"sqlite:///{data_dir / 'studio.db'}"),
         dev_mode=_bool("DEV_MODE", True),
-        brand_name=_env("BRAND_NAME", "Lustre"),
+        secret_key=_env("SECRET_KEY", "dev-only-change-me"),
+        brand_name=_env("BRAND_NAME", "Jewellery Image Studio"),
         cors_origins=[o.strip() for o in _env("CORS_ORIGINS", "*").split(",")],
         cutout_provider=_env("CUTOUT_PROVIDER", "threshold"),
         rembg_model=_env("REMBG_MODEL", "birefnet-general"),
         scene_provider=_env("SCENE_PROVIDER", "mock"),
         upscale_provider=_env("UPSCALE_PROVIDER", "lanczos"),
-        replicate_token=_env("REPLICATE_API_TOKEN"),
         flux_fill_model=_env("FLUX_FILL_MODEL", "black-forest-labs/flux-fill-pro"),
         esrgan_model=_env("ESRGAN_MODEL", "nightmareai/real-esrgan"),
         preview_long_side=_int("PREVIEW_LONG_SIDE", 1024),
-        preview_watermark=_bool("PREVIEW_WATERMARK", True),
-        free_credits=_int("FREE_CREDITS", 3),
-        daily_preview_jobs=_int("DAILY_PREVIEW_JOBS", 20),
+        trial_credits=_int("TRIAL_CREDITS", 3),
+        initial_generation_cost=_int("INITIAL_GENERATION_COST", 1),
+        additional_generation_cost=_int("ADDITIONAL_GENERATION_COST", 1),
+        quality_refund_auto_limit=_int("QUALITY_REFUND_AUTO_LIMIT", 5),
         max_upload_mb=_int("MAX_UPLOAD_MB", 25),
-        auto_jobs=[(s.split(":")[0], int(s.split(":")[1]))
-                   for s in _env("AUTO_JOBS", "white:1,marble:4").split(",") if s],
-        prerender_per_job=_int("PRERENDER_PER_JOB", 2),
+        max_photos_per_product=_int("MAX_PHOTOS_PER_PRODUCT", 8),
+        sms_provider=_env("SMS_PROVIDER", "console"),
         pack_prices_inr={
             "starter": _price("PACK_STARTER_PRICE_INR"),
             "shop": _price("PACK_SHOP_PRICE_INR"),

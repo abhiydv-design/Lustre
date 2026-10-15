@@ -1,12 +1,13 @@
-"""Output formats and where the product sits on the canvas."""
+"""Output sizes and where the product sits on the canvas."""
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-FORMATS: dict[str, tuple[int, int]] = {
-    "1:1": (3840, 3840),   # marketplaces
-    "4:5": (3072, 3840),   # Instagram portrait
-    "16:9": (3840, 2160),  # web banner (4K UHD)
+# Exact ratios and pixel sizes are still an open spec decision (§9.6, §18 #3); these are working defaults.
+ASPECTS: dict[str, tuple[int, int]] = {
+    "1:1": (3840, 3840),
+    "4:5": (3072, 3840),
+    "16:9": (3840, 2160),
 }
 
 
@@ -20,9 +21,10 @@ class Placement:
     scale: float  # placed pixels per source pixel (>1 means the photo is being enlarged)
 
 
-def plan(product_size: tuple[int, int], fmt: str, fill: float = 0.62, center_y: float = 0.53) -> Placement:
-    """Fit the product into the final 4K canvas, centred and slightly low (reads as 'resting')."""
-    W, H = FORMATS[fmt]
+def plan(product_size: tuple[int, int], canvas: tuple[int, int], fill: float = 0.62,
+         center_y: float = 0.53) -> Placement:
+    """Fit the whole product inside the canvas, centred and slightly low. Never crops the piece (§13.1)."""
+    W, H = canvas
     pw, ph = product_size
     box_h = fill * min(W, H)
     box_w = box_h if W <= H else min(W * 0.8, box_h * 1.6)
@@ -39,8 +41,8 @@ def rescale(p: Placement, size: tuple[int, int]) -> Placement:
                      max(1, round(p.w * fx)), max(1, round(p.h * fy)), p.scale * fx)
 
 
-def preview_size(fmt: str, long_side: int) -> tuple[int, int]:
-    """Preview canvas with the same aspect, sides rounded to multiples of 16 (diffusion models like that)."""
-    W, H = FORMATS[fmt]
+def preview_size(canvas: tuple[int, int], long_side: int) -> tuple[int, int]:
+    """Same aspect as the final canvas, sides rounded to multiples of 16 (diffusion models like that)."""
+    W, H = canvas
     k = long_side / max(W, H)
     return max(16, round(W * k / 16) * 16), max(16, round(H * k / 16) * 16)
