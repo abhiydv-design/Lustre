@@ -21,12 +21,8 @@ services:
         value: "1"
       - key: ADMIN_TOKENS          # e.g. yourname:a-long-random-secret
         sync: false
-      - key: CUTOUT_PROVIDER
-        value: rembg
-      - key: SCENE_PROVIDER
-        value: replicate
-      - key: UPSCALE_PROVIDER
-        value: replicate
+      - key: AI_MODE               # type: test  (plain backgrounds, no keys)  or  real  (AI backgrounds, needs REPLICATE_API_TOKEN)
+        sync: false
       - key: REPLICATE_API_TOKEN
         sync: false
       - key: PACK_STARTER_PRICE_INR

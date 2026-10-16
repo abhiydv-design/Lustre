@@ -84,7 +84,13 @@ Data is kept in a Docker volume between restarts. The Docker files haven't been 
 `render.yaml` sets the app up on [render.com](https://render.com) with an https address and a disk for photos:
 
 1. On Render: **New → Blueprint**, then connect the GitHub repo.
-2. Fill in the values it asks for: `ADMIN_TOKENS`, `REPLICATE_API_TOKEN` and pack prices.
+2. Fill in the values it asks for:
+   - `AI_MODE`: type `test` to start (plain backgrounds, no keys needed), or `real` for AI backgrounds.
+   - `ADMIN_TOKENS`: your name, a colon and a long secret, like `abhi:k3j9x2m8q7w4p1z6`. That secret logs you into the team console.
+   - `REPLICATE_API_TOKEN`: needed only for `real`; leave empty for `test`.
+   - Pack prices, e.g. `249`, `999`, `3499`.
+
+   To switch later, change `AI_MODE` in the service's **Environment** tab and save. Render restarts the app, and updates from GitHub won't undo it.
 3. Deploy. Your address will look like `https://jewellery-image-studio.onrender.com/app`.
 
 It uses Render's **Standard** instance (2 GB memory), because the AI cut-out needs about 1.3 GB; the smallest plans would crash when a jeweller makes an image. These field names follow Render's blueprint format; if Render flags one, adjust it in the dashboard.

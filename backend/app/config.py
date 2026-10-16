@@ -20,6 +20,11 @@ def _bool(name: str, default: bool) -> bool:
     return _env(name, "1" if default else "0").lower() in ("1", "true", "yes", "on")
 
 
+def _real_ai() -> bool:
+    """AI_MODE=real → AI cut-out + Replicate backgrounds and upscaling. Anything else → test mode."""
+    return (_env("AI_MODE", "test") or "test").strip().lower() == "real"
+
+
 def _price(name: str) -> int | None:
     value = _env(name)
     return int(value) if value is not None else None
@@ -91,10 +96,11 @@ def get_settings() -> Settings:
         secret_key=_env("SECRET_KEY", "dev-only-change-me"),
         brand_name=_env("BRAND_NAME", "Jewellery Image Studio"),
         cors_origins=[o.strip() for o in _env("CORS_ORIGINS", "*").split(",")],
-        cutout_provider=_env("CUTOUT_PROVIDER", "threshold"),
+        # AI_MODE picks all three providers at once; any provider set explicitly still wins.
+        cutout_provider=_env("CUTOUT_PROVIDER", "rembg" if _real_ai() else "threshold"),
         rembg_model=_env("REMBG_MODEL", "isnet-general-use"),
-        scene_provider=_env("SCENE_PROVIDER", "mock"),
-        upscale_provider=_env("UPSCALE_PROVIDER", "lanczos"),
+        scene_provider=_env("SCENE_PROVIDER", "replicate" if _real_ai() else "mock"),
+        upscale_provider=_env("UPSCALE_PROVIDER", "replicate" if _real_ai() else "lanczos"),
         flux_fill_model=_env("FLUX_FILL_MODEL", "black-forest-labs/flux-fill-pro"),
         esrgan_model=_env("ESRGAN_MODEL", "nightmareai/real-esrgan"),
         preview_long_side=_int("PREVIEW_LONG_SIDE", 1024),

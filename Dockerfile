@@ -15,7 +15,7 @@ COPY backend/ .
 RUN rm -rf .venv .env data
 
 # Safe defaults = test mode. Real settings come from backend/.env (compose) or the host's dashboard.
-ENV DEV_MODE=1 CUTOUT_PROVIDER=threshold SCENE_PROVIDER=mock UPSCALE_PROVIDER=lanczos
+ENV DEV_MODE=1 AI_MODE=test
 
 VOLUME /data
 EXPOSE 8000

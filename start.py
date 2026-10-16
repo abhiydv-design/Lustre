@@ -97,6 +97,8 @@ RAZORPAY_WEBHOOK_SECRET=
 
 
 def needs_ai(env: dict[str, str]) -> bool:
+    if env.get("AI_MODE", "").lower() == "real" and not env.get("CUTOUT_PROVIDER"):
+        return True
     return env.get("CUTOUT_PROVIDER") == "rembg" or "replicate" in (env.get("SCENE_PROVIDER"), env.get("UPSCALE_PROVIDER"))
 
 
