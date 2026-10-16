@@ -21,6 +21,8 @@
 html[lang=hi]{--display:"Mukta",system-ui,sans-serif}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none !important}
+.app[aria-busy=true]{cursor:progress}
+.app[aria-busy=true]>*{pointer-events:none;opacity:.5;transition:opacity .15s .2s}
 html,body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 var(--body)}
 html[lang=hi] body{line-height:1.6}
 body{min-height:100vh;min-height:100dvh}

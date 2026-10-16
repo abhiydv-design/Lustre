@@ -511,11 +511,13 @@
     [/^#\/settings$/, () => settings()],
   ];
   async function route() {
-    S.seq++;
+    const seq = ++S.seq;
     $$(".scrim").forEach(x => x.remove());
     if (!S.token) return onboarding();
     const h = location.hash || "#/";
     const hit = ROUTES.find(([re]) => re.test(h));
+    // While the next screen loads (slow mobile data), the old one can't be tapped by mistake.
+    app.setAttribute("aria-busy", "true");
     try {
       await (hit ? hit[1](h.match(hit[0])) : home());
       window.scrollTo(0, 0);
@@ -523,6 +525,8 @@
       if (e instanceof ApiError && e.status === 401) { S.token = null; store.set("token", null); return onboarding(); }
       if (e instanceof ApiError && e.status === 404) { location.hash = "#/"; return; }
       errorToast(e);
+    } finally {
+      if (seq === S.seq) app.removeAttribute("aria-busy");
     }
   }
   setLang(S.lang);

@@ -8,3 +8,4 @@ backend/evaluation/runs/
 backend/evaluation/datasets/
 backend/datasets/
 backend/scripts/e2e-shots/
+backend/scripts/check-shots/

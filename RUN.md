@@ -54,7 +54,8 @@ It prints a link like `https://something.trycloudflare.com/app`; open it on your
 4. Run `python start.py` again. It installs the AI packages by itself.
 
 Notes:
-- **First image:** it's slower, because the cut-out model downloads once (about 1 GB).
+- **First image:** it's slower, because the cut-out model downloads once (about 180 MB).
+- **Memory:** the AI cut-out uses about 1.3 GB, so the computer or server needs at least 2 GB free.
 - **What costs money:** White and Soft grey don't use AI and cost nothing. Marble and Warm beige call Replicate.
 - **If an AI image fails:** the model settings were written from memory and haven't been run against Replicate yet. The jeweller's credit is returned automatically; send the error from the terminal window and it can be fixed.
 
@@ -86,7 +87,7 @@ Data is kept in a Docker volume between restarts. The Docker files haven't been 
 2. Fill in the values it asks for: `ADMIN_TOKENS`, `REPLICATE_API_TOKEN` and pack prices.
 3. Deploy. Your address will look like `https://jewellery-image-studio.onrender.com/app`.
 
-The disk needs a paid instance, a few dollars a month. These field names follow Render's blueprint format; if Render flags one, adjust it in the dashboard.
+It uses Render's **Standard** instance (2 GB memory), because the AI cut-out needs about 1.3 GB; the smallest plans would crash when a jeweller makes an image. These field names follow Render's blueprint format; if Render flags one, adjust it in the dashboard.
 
 **Before sharing the link widely:** SMS isn't connected yet, so test mode shows the sign-in code on screen. That means anyone could sign in as any phone number. That's fine for a small, supervised pilot with jewellers you know. Before a public launch, connect an SMS gateway (`backend/app/sms.py`; Indian SMS needs DLT registration) and set `DEV_MODE=0`.
 

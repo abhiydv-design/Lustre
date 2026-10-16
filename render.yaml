@@ -6,7 +6,7 @@ services:
     name: jewellery-image-studio
     runtime: docker
     dockerfilePath: ./Dockerfile
-    plan: starter
+    plan: standard   # 2 GB memory: the AI cut-out needs ~1.3 GB. The 512 MB starter plan would crash.
     healthCheckPath: /health
     disk:
       name: studio-data

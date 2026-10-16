@@ -81,7 +81,7 @@ ADMIN_TOKENS=admin:{admin}
 # ---------- Real AI backgrounds ----------
 # 1. Create an account at replicate.com, add billing, copy your API token.
 # 2. Replace the three provider lines above with:
-#      CUTOUT_PROVIDER=rembg
+#      CUTOUT_PROVIDER=rembg      (AI cut-out; needs about 1.3 GB of free memory)
 #      SCENE_PROVIDER=replicate
 #      UPSCALE_PROVIDER=replicate
 # 3. Set your token below and run start.py again (it installs the AI packages by itself).

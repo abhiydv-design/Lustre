@@ -92,7 +92,7 @@ def get_settings() -> Settings:
         brand_name=_env("BRAND_NAME", "Jewellery Image Studio"),
         cors_origins=[o.strip() for o in _env("CORS_ORIGINS", "*").split(",")],
         cutout_provider=_env("CUTOUT_PROVIDER", "threshold"),
-        rembg_model=_env("REMBG_MODEL", "birefnet-general"),
+        rembg_model=_env("REMBG_MODEL", "isnet-general-use"),
         scene_provider=_env("SCENE_PROVIDER", "mock"),
         upscale_provider=_env("UPSCALE_PROVIDER", "lanczos"),
         flux_fill_model=_env("FLUX_FILL_MODEL", "black-forest-labs/flux-fill-pro"),

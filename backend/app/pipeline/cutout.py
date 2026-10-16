@@ -33,7 +33,11 @@ class ThresholdCutout:
 
 
 class RembgCutout:
-    """BiRefNet via rembg: high-quality edges on prongs, chains and stones. Runs on CPU."""
+    """AI cut-out via rembg, on CPU. Memory measured on a 4 GB, 1-CPU machine with a 2400×1800 photo:
+    - isnet-general-use (default): ~1.3 GB peak, ~3 s per photo. Fits a 2 GB server.
+    - birefnet-general: finer edges on chains and prongs, but went past 2.7 GB and was killed.
+      Use it only on servers with 6 GB+ of memory, and compare both with the evaluation harness.
+    The model stays loaded after first use, so the server keeps that memory."""
 
     name = "rembg"
 
